@@ -1,0 +1,54 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="HeadingTextStyle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+    <style name="TextStyle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="ListViewTextStyle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="SecondaryButtonStyle">
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">50dp</item>
+        <item name="android:background">@drawable/button_rounded</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_margin">@dimen/button_margin</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:tint">@color/colorPrimary</item>
+    </style>
+
+    <style name="PrimaryButtonStyle">
+        <item name="android:background">@drawable/button_rounded_primary</item>
+        <item name="android:padding">@dimen/button_padding</item>
+
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_margin">@dimen/button_margin</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+</resources>

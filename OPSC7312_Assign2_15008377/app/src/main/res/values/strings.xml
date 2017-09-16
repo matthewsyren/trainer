@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Teaching App</string>
+
+    <string name="prompt_email">Enter your email address</string>
+    <string name="prompt_password">Enter a password</string>
+    <string name="prompt_confirm_password">Confirm your password</string>
+
+    <string name="login">Login</string>
+    <string name="createAccount">Create Account</string>
+
+    <string name="text_question">Question</string>
+    <string name="text_option_one">Option One</string>
+    <string name="text_option_two">Option Two</string>
+    <string name="text_option_three">Option Three</string>
+    <string name="text_option_four">Option Four</string>
+    <string name="button_add_question">Add Question</string>
+    <string name="text_correct_answer">Correct Answer:</string>
+    <string-array name="spinner_correct_answer">
+        <item>Option One</item>
+        <item>Option Two</item>
+        <item>Option Three</item>
+        <item>Option Four</item>
+    </string-array>
+    <string name="list_view_text_question">Question %s</string>
+    <string name="list_view_text_option_one">Option One %s</string>
+    <string name="list_view_text_option_two">Option Two %s</string>
+    <string name="list_view_text_option_three">Option Three %s</string>
+    <string name="list_view_text_option_four">Option Four %s</string>
+</resources>

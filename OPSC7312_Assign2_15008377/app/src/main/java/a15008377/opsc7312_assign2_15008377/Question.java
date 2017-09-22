@@ -4,11 +4,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.io.Serializable;
+
 /**
  * Created by Matthew Syrén on 2017/09/16.
  */
 
-public class Question {
+public class Question implements Serializable{
     //Declarations
     private String question;
     private String optionOne;

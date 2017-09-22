@@ -3,10 +3,12 @@ package a15008377.opsc7312_assign2_15008377;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
         TextView txtOptionTwo;
         TextView txtOptionThree;
         TextView txtOptionFour;
+        ImageButton btnDelete;
 
         //Inflates the list_row view for the ListView
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
@@ -48,6 +51,7 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
         txtOptionTwo = (TextView) convertView.findViewById(R.id.text_option_two);
         txtOptionThree = (TextView) convertView.findViewById(R.id.text_option_three);
         txtOptionFour = (TextView) convertView.findViewById(R.id.text_option_four);
+        btnDelete = (ImageButton) convertView.findViewById(R.id.button_delete_question);
 
         //Displays the data in the appropriate Views
         Resources resources = context.getResources();
@@ -56,6 +60,15 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
         txtOptionTwo.setText(resources.getString(R.string.list_view_text_option_two, lstQuestions.get(position).getOptionTwo()));
         txtOptionThree.setText(resources.getString(R.string.list_view_text_option_three, lstQuestions.get(position).getOptionThree()));
         txtOptionFour.setText(resources.getString(R.string.list_view_text_option_four, lstQuestions.get(position).getOptionFour()));
+
+        //Adds OnClickListener to delete button
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lstQuestions.remove(position);
+                notifyDataSetChanged();
+            }
+        });
 
         return convertView;
     }

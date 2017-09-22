@@ -11,8 +11,20 @@
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_quiz_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/text_quiz_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/text_quiz_name"
+                    android:inputType="textEmailAddress" />
+            </android.support.design.widget.TextInputLayout>
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_question"
                 android:layout_width="match_parent"
@@ -24,6 +36,16 @@
                     android:hint="@string/text_question"
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/button_listen_for_speech"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="listenToSpeechOnClick"
+                android:src="@drawable/ic_settings_voice_black_24dp"
+                android:background="@drawable/button_rounded"
+                android:tint="@color/colorPrimary"
+                android:padding="@dimen/button_padding"/>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_option_one"
@@ -98,7 +120,17 @@
             <ListView
                 android:id="@+id/list_view_quiz_questions"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"/>
+                android:layout_height="200dp"/>
+
+            <Button
+                android:id="@+id/button_add_quiz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_rounded_primary"
+                android:text="@string/button_add_quiz"
+                android:textColor="#ffffff"
+                android:onClick="addQuizOnClick"
+                android:layout_margin="@dimen/activity_horizontal_margin"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

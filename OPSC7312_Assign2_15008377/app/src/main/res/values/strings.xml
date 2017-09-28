@@ -7,7 +7,7 @@
 
     <string name="login">Login</string>
     <string name="createAccount">Create Account</string>
-
+    <string name="check_box_admin_rights">Admin Rights</string>
     <string name="text_quiz_name">Quiz Name</string>
     <string name="text_question">Question</string>
     <string name="text_option_one">Option One</string>
@@ -22,10 +22,30 @@
         <item>Option Three</item>
         <item>Option Four</item>
     </string-array>
-    <string name="list_view_text_question">Question %s</string>
-    <string name="list_view_text_option_one">Option One %s</string>
-    <string name="list_view_text_option_two">Option Two %s</string>
-    <string name="list_view_text_option_three">Option Three %s</string>
-    <string name="list_view_text_option_four">Option Four %s</string>
+    <string name="list_view_text_question">Question: %s</string>
+    <string name="list_view_text_option_one">Option One: %s</string>
+    <string name="list_view_text_option_two">Option Two: %s</string>
+    <string name="list_view_text_option_three">Option Three: %s</string>
+    <string name="list_view_text_option_four">Option Four: %s</string>
+    <string name="list_view_text_correct_option">Correct Option: %d</string>
     <string name="button_add_quiz">Add Quiz</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Admin NavigationDrawer -->
+    <string name="nav_home">Home</string>
+    <string name="nav_quizzes">Quizzes</string>
+    <string name="nav_statistics">Statistics</string>
+    <string name="nav_videos">Videos</string>
+    <string name="nav_sign_out">Sign Out</string>
+
+
+    <string name="title_activity_admin_home">Admin Home</string>
+    <string name="title_activity_quiz_fetcher">Quiz Fetches</string>
+    <string name="title_activity_user_home">User Home</string>
+    <string name="title_activity_quiz_manager">Quiz Manager</string>
+
 </resources>

@@ -25,10 +25,15 @@ public class QuizActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz);
+        try{
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_quiz);
 
-        fetchQuiz();
+            fetchQuiz();
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Method fetches the Quiz from Firebase
@@ -136,7 +141,7 @@ public class QuizActivity extends AppCompatActivity {
 
         @Override
         protected void onReceiveResult ( int resultCode, Bundle resultData){
-            //Processes the result when the Stock has been written to the Firebase Database
+            //Processes the result when the Quiz has been written to the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE) {
                 ArrayList<Quiz> lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
 
@@ -145,9 +150,6 @@ public class QuizActivity extends AppCompatActivity {
                 }
 
                 displayQuiz();
-            }
-            else{
-                Toast.makeText(getApplicationContext(), "Damn", Toast.LENGTH_LONG).show();
             }
         }
     }

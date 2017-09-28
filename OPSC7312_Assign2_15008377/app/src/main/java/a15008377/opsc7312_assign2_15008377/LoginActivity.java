@@ -41,8 +41,7 @@ public class LoginActivity extends AppCompatActivity {
             //Takes the user to the HomeActivity if they have already signed in
             User user = new User(this);
             if(user.getUserEmailAddress() != null){
-                Intent intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
-                startActivity(intent);
+                signIn(user.isUserAdminRights());
             }
         }
         catch(Exception exc){
@@ -104,18 +103,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //Method writes the user's data to SharedPreferences and then takes the user to the HomeActivity
-    public void writeDataToSharedPreferences(String email, String key){
+    public void writeDataToSharedPreferences(String email, String key, boolean adminRights){
         try{
             //Saves the user's data in SharedPreferences
             SharedPreferences preferences = getSharedPreferences("", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("userEmail", email);
             editor.putString("userKey", key);
+            editor.putBoolean("userAdminRights", adminRights);
             editor.apply();
 
-            //Takes the user to the StartActivity
-            Intent intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
-            startActivity(intent);
+            signIn(adminRights);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -126,6 +124,24 @@ public class LoginActivity extends AppCompatActivity {
     public void createAccountOnClick(View view){
         try{
             Intent intent = new Intent(LoginActivity.this, CreateAccountActivity.class);
+            startActivity(intent);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method takes the user to the appropriate Activity when they sign in
+    public void signIn(boolean adminRights){
+        try{
+            //Takes the user to the appropriate Activity (based on admin rights)
+            Intent intent;
+            if(adminRights){
+                intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
+            }
+            else{
+                intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+            }
             startActivity(intent);
         }
         catch(Exception exc){

@@ -9,7 +9,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_admin_home"
+        layout="@layout/app_bar_quiz_manager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -21,6 +21,5 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_admin_home"
         app:menu="@menu/activity_admin_home_drawer" />
-
 
 </android.support.v4.widget.DrawerLayout>

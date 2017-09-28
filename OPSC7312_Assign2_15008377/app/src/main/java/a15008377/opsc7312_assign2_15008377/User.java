@@ -24,11 +24,19 @@ public class User {
     private String userEmailAddress;
     private String userKey;
     private String userPassword;
+    private boolean userAdminRights;
 
     //Constructor (used when the user is creating an account)
-    public User(String email, String password){
-        userEmailAddress = email;
-        userPassword = password;
+    public User(String userEmailAddress, String userPassword, boolean userAdminRights){
+        this.userEmailAddress = userEmailAddress;
+        this.userPassword = userPassword;
+        this.userAdminRights = userAdminRights;
+    }
+
+    //Constructor (used when logging in)
+    public User(String userEmailAddress, String userPassword) {
+        this.userEmailAddress = userEmailAddress;
+        this.userPassword = userPassword;
     }
 
     //Default constructor (used when the user has already signed in, context is used to get the user's key from SharedPreferences)
@@ -37,6 +45,7 @@ public class User {
         SharedPreferences preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
         userEmailAddress = preferences.getString("userEmail", null);
         userKey = preferences.getString("userKey", null);
+        userAdminRights = preferences.getBoolean("userAdminRights", false);
     }
 
     //Accessor methods
@@ -52,6 +61,10 @@ public class User {
         return userPassword;
     }
 
+    public boolean isUserAdminRights() {
+        return userAdminRights;
+    }
+
     //Method gets the unique key used by Firebase to store information about the user signed in
     public void setUserKey(final LoginActivity context){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -65,12 +78,14 @@ public class User {
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
                     String key = snapshot.getKey();
-                    String email = (String) snapshot.getValue();
+                    String email = (String) snapshot.child("userEmailAddress").getValue();
+                    String adminRights = (String) snapshot.child("userAdminRights").getValue();
 
                     //Sets the user's key once the key has been located, and calls the method to log the user in
                     if(email.equals(userEmailAddress)){
                         userKey = key;
-                        context.writeDataToSharedPreferences(userEmailAddress, userKey);
+                        userAdminRights = Boolean.valueOf(adminRights);
+                        context.writeDataToSharedPreferences(userEmailAddress, userKey, userAdminRights);
                     }
                 }
             }

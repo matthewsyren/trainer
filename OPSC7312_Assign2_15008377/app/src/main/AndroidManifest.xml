@@ -9,23 +9,38 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AdminHomeActivity" />
-        <activity android:name=".QuizSetterActivity">
-
-        </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".QuizActivity">
+        <activity android:name=".QuizSetterActivity" />
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CreateAccountActivity" />
+        <activity android:name=".QuizActivity" />
 
         <service
             android:name=".FirebaseService"
             android:exported="false" />
+
+        <activity
+            android:name=".AdminHomeActivity"
+            android:label="@string/title_activity_admin_home"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".QuizFetcherActivity"
+            android:label="@string/title_activity_quiz_fetcher"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UserHomeActivity"
+            android:label="@string/title_activity_user_home"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".QuizManagerActivity"
+            android:label="@string/title_activity_quiz_manager"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".VideoMakerActivity"></activity>
     </application>
 
 </manifest>

@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 /**
@@ -39,6 +41,7 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
         TextView txtOptionTwo;
         TextView txtOptionThree;
         TextView txtOptionFour;
+        TextView txtCorrectOption;
         ImageButton btnDelete;
 
         //Inflates the list_row view for the ListView
@@ -51,6 +54,7 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
         txtOptionTwo = (TextView) convertView.findViewById(R.id.text_option_two);
         txtOptionThree = (TextView) convertView.findViewById(R.id.text_option_three);
         txtOptionFour = (TextView) convertView.findViewById(R.id.text_option_four);
+        txtCorrectOption = (TextView) convertView.findViewById(R.id.text_correct_option);
         btnDelete = (ImageButton) convertView.findViewById(R.id.button_delete_question);
 
         //Displays the data in the appropriate Views
@@ -60,6 +64,7 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
         txtOptionTwo.setText(resources.getString(R.string.list_view_text_option_two, lstQuestions.get(position).getOptionTwo()));
         txtOptionThree.setText(resources.getString(R.string.list_view_text_option_three, lstQuestions.get(position).getOptionThree()));
         txtOptionFour.setText(resources.getString(R.string.list_view_text_option_four, lstQuestions.get(position).getOptionFour()));
+        txtCorrectOption.setText(resources.getString(R.string.list_view_text_correct_option, lstQuestions.get(position).getAnswerPosition()));
 
         //Adds OnClickListener to delete button
         btnDelete.setOnClickListener(new View.OnClickListener() {

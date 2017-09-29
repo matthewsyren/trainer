@@ -143,9 +143,6 @@ public class QuizSetterActivity extends AppCompatActivity {
             if (resultCode == FirebaseService.ACTION_WRITE_QUIZ_RESULT_CODE) {
                 Toast.makeText(getApplicationContext(), "Quiz uploaded successfully", Toast.LENGTH_LONG).show();
             }
-            else{
-                Toast.makeText(getApplicationContext(), "Damn", Toast.LENGTH_LONG).show();
-            }
         }
     }
 }

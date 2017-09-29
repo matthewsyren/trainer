@@ -22,6 +22,7 @@
         <item>Option Three</item>
         <item>Option Four</item>
     </string-array>
+    <string name="list_view_text_quiz_name">Quiz Name: %s</string>
     <string name="list_view_text_question">Question: %s</string>
     <string name="list_view_text_option_one">Option One: %s</string>
     <string name="list_view_text_option_two">Option Two: %s</string>
@@ -44,7 +45,7 @@
 
 
     <string name="title_activity_admin_home">Admin Home</string>
-    <string name="title_activity_quiz_fetcher">Quiz Fetches</string>
+    <string name="title_activity_quiz_fetcher">New Quizzes</string>
     <string name="title_activity_user_home">User Home</string>
     <string name="title_activity_quiz_manager">Quiz Manager</string>
 

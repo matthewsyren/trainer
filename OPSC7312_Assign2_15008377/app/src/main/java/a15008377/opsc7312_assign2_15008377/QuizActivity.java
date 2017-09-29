@@ -1,5 +1,6 @@
 package a15008377.opsc7312_assign2_15008377;
 
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
@@ -36,11 +37,12 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
-    //Method fetches the Quiz from Firebase
+    //Method fetches the Quiz passed in from the previous Activity
     public void fetchQuiz(){
         try{
-            Quiz quiz = new Quiz();
-            quiz.requestQuizzes(null, this, new DataReceiver(new Handler()));
+            Bundle bundle = getIntent().getExtras();
+            quiz = (Quiz) bundle.getSerializable("quiz");
+            displayQuiz();
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -79,10 +81,9 @@ public class QuizActivity extends AppCompatActivity {
         try{
             if(quiz.getLstQuestions().get(questionNumber).getAnswerPosition() == 0){
                 correctAnswers++;
-                Toast.makeText(getApplicationContext(), "Corrrect!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
             }
-            questionNumber++;
-            displayQuiz();
+            displayCorrectAnswer(0);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -94,10 +95,9 @@ public class QuizActivity extends AppCompatActivity {
         try{
             if(quiz.getLstQuestions().get(questionNumber).getAnswerPosition() == 1){
                 correctAnswers++;
-                Toast.makeText(getApplicationContext(), "Corrrect!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
             }
-            questionNumber++;
-            displayQuiz();
+            displayCorrectAnswer(1);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -109,10 +109,9 @@ public class QuizActivity extends AppCompatActivity {
         try{
             if(quiz.getLstQuestions().get(questionNumber).getAnswerPosition() == 2){
                 correctAnswers++;
-                Toast.makeText(getApplicationContext(), "Corrrect!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
             }
-            questionNumber++;
-            displayQuiz();
+            displayCorrectAnswer(2);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -124,33 +123,50 @@ public class QuizActivity extends AppCompatActivity {
         try{
             if(quiz.getLstQuestions().get(questionNumber).getAnswerPosition() == 3){
                 correctAnswers++;
-                Toast.makeText(getApplicationContext(), "Corrrect!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
             }
-            questionNumber++;
-            displayQuiz();
+            displayCorrectAnswer(3);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
-    private class DataReceiver extends ResultReceiver {
-        private DataReceiver(Handler handler) {
-            super(handler);
-        }
+    //Method displays the correct answer in green
+    public void displayCorrectAnswer(final int optionChosen){
+        try{
+            //Button assignments
+            Button btnOptionOne = (Button) findViewById(R.id.button_option_one);
+            Button btnOptionTwo = (Button) findViewById(R.id.button_option_two);
+            Button btnOptionThree = (Button) findViewById(R.id.button_option_three);
+            Button btnOptionFour = (Button) findViewById(R.id.button_option_four);
+            final Button[] buttons = {btnOptionOne, btnOptionTwo, btnOptionThree, btnOptionFour};
 
-        @Override
-        protected void onReceiveResult ( int resultCode, Bundle resultData){
-            //Processes the result when the Quiz has been written to the Firebase Database
-            if (resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE) {
-                ArrayList<Quiz> lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
+            //Gets correct answer and turns the correct answer green, and the user's answer red if their answer is incorrect
+            final int correctAnswer = quiz.getLstQuestions().get(questionNumber).getAnswerPosition();
+            buttons[correctAnswer].setBackgroundResource(R.drawable.button_rounded_correct_answer);
+            if(optionChosen != correctAnswer){
+                buttons[optionChosen].setBackgroundResource(R.drawable.button_rounded_incorrect_answer);
+            }
 
-                if(lstQuizzes.size() >= 1){
-                    quiz = lstQuizzes.get(0);
+            //Pauses the program to allow the user to see the correct answer
+            new CountDownTimer(5000, 50) {
+                @Override
+                public void onTick(long arg0) {
                 }
 
-                displayQuiz();
-            }
+                @Override
+                public void onFinish() {
+                    //Resets the buttons back to their normal colours and displays the next question
+                    buttons[correctAnswer].setBackgroundResource(R.drawable.button_rounded);
+                    buttons[optionChosen].setBackgroundResource(R.drawable.button_rounded);
+                    questionNumber++;
+                    displayQuiz();
+                }
+            }.start();
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

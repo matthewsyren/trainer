@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="a15008377.opsc7312assign1_15008377.LoginActivity">
+    tools:context="a15008377.opsc7312_assign2_15008377.LoginActivity">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/text_input_layout_email_address"
@@ -45,8 +45,8 @@
         android:layout_centerHorizontal="true"
         android:text="@string/login"
         android:onClick="loginOnClick"
-        android:background="@drawable/button_rounded"
-        android:textColor="@color/colorPrimary" />
+        android:background="@drawable/button_rounded_primary"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/button_create_account_link"

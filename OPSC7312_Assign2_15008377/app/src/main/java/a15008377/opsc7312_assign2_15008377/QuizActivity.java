@@ -68,8 +68,21 @@ public class QuizActivity extends AppCompatActivity {
                 btnOptionFour.setText(question.getOptionFour());
             }
             else{
-                Toast.makeText(getApplicationContext(), "Correct answers: " + correctAnswers, Toast.LENGTH_LONG).show();
+                saveScore();
             }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method saves the user's score to the Firebase Database
+    public void saveScore(){
+        try{
+            double percentage = ((double) correctAnswers / quiz.getLstQuestions().size()) * 100;
+            double result = Math.round(percentage);
+            Statistic statistic = new Statistic(quiz.getKey(), result);
+            statistic.requestWriteOfStatistic(this, new DataReceiver(new Handler()));
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -167,6 +180,20 @@ public class QuizActivity extends AppCompatActivity {
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class DataReceiver extends ResultReceiver {
+        private DataReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult ( int resultCode, Bundle resultData){
+            //Processes the result when the Stock has been written to the Firebase Database
+            if (resultCode == FirebaseService.ACTION_WRITE_STATISTIC_RESULT_CODE) {
+                Toast.makeText(getApplicationContext(), "Quiz score saved successfully!", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

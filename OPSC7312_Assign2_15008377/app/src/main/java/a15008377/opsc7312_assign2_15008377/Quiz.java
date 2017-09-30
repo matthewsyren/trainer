@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class Quiz implements Serializable{
     //Declarations
     private String name;
+    private String key;
     private ArrayList<Question> lstQuestions;
 
     public Quiz(){
@@ -27,6 +28,7 @@ public class Quiz implements Serializable{
         this.lstQuestions = lstQuestions;
     }
 
+    //Getter methods
     public String getName() {
         return name;
     }
@@ -35,11 +37,19 @@ public class Quiz implements Serializable{
         return lstQuestions;
     }
 
+    public String getKey() {
+        return key;
+    }
+
+    //Setter method
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     //Requests Quiz Items from the Firebase Database
     public void requestQuizzes(String searchTerm, Context context, ResultReceiver resultReceiver){
         try{
-            //Requests location information from the LocationService class
-            String firebaseKey = new User(context).getUserKey();
+            //Requests Quiz information from the FirebaseService class
             Intent intent = new Intent(context, FirebaseService.class);
             intent.putExtra(FirebaseService.QUIZ_ID, searchTerm);
             intent.setAction(FirebaseService.ACTION_FETCH_QUIZ);

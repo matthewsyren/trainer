@@ -29,13 +29,18 @@ public class FirebaseService extends IntentService {
     public static final String QUIZ_ID = "a15008377.opsc7312assign2_15008377.SEARCH_TERM";
 
     //Action Declarations
-    public static final String ACTION_FETCH_QUIZ =  "a15008377.opsc7312assign2_15008377.action.FETCH_QI=UIZ";
+    public static final String ACTION_FETCH_QUIZ =  "a15008377.opsc7312assign2_15008377.action.FETCH_QUIZ";
     public static final String ACTION_WRITE_QUIZ =  "a15008377.opsc7312assign2_15008377.action.WRITE_QUIZ";
     public static final String ACTION_WRITE_QUIZ_INFORMATION = "a15008377.opsc7312assign2_15008377.action.WRITE_QUIZ_INFORMATION";
+    public static final String ACTION_FETCH_STATISTIC =  "a15008377.opsc7312assign2_15008377.action.FETCH_STATISTIC";
+    public static final String ACTION_WRITE_STATISTIC =  "a15008377.opsc7312assign2_15008377.action.WRITE_STATISTIC";
+
 
     //Result Codes and ResultReceiver
     public static final int ACTION_FETCH_QUIZ_RESULT_CODE = 1;
     public static final int ACTION_WRITE_QUIZ_RESULT_CODE = 2;
+    public static final int ACTION_FETCH_STATISTIC_RESULT_CODE = 3;
+    public static final int ACTION_WRITE_STATISTIC_RESULT_CODE = 4;
     private ResultReceiver resultReceiver;
 
     //Constructor
@@ -61,6 +66,10 @@ public class FirebaseService extends IntentService {
                 String writeInformation = intent.getStringExtra(ACTION_WRITE_QUIZ_INFORMATION);
                 startActionWriteQuiz(quiz, writeInformation);
             }
+            else if(action.equals(ACTION_WRITE_STATISTIC)){
+                Statistic statistic = (Statistic) intent.getSerializableExtra(ACTION_WRITE_STATISTIC);
+                startActionWriteStatistic(statistic);
+            }
         }
     }
 
@@ -80,6 +89,7 @@ public class FirebaseService extends IntentService {
                 for(DataSnapshot snapshot : lstSnapshots){
                     //Retrieves the Quiz from Firebase and adds the Quiz to an ArrayList of Quiz objects
                     Quiz quiz = snapshot.getValue(Quiz.class);
+                    quiz.setKey(snapshot.getKey());
                     if(searchTerm == null || quiz.getName().contains(searchTerm)) {
                         lstQuizzes.add(quiz);
                     }
@@ -125,6 +135,34 @@ public class FirebaseService extends IntentService {
         });
     }
 
+    //Method writes a Statistic object to the Firebase database
+    private void startActionWriteStatistic(final Statistic statistic){
+        //Gets reference to Firebase
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(new User(this).getUserKey());
+
+        //Adds Listeners for when the data is changed
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String quizKey = statistic.getQuizKey();
+                Statistic statisticNoKey = new Statistic(null, statistic.getResult());
+                databaseReference.child(quizKey).setValue(statisticNoKey);
+
+                //Removes the EventListener
+                databaseReference.removeEventListener(this);
+
+                //Returns the result
+                returnWriteStatisticResult(true);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.i("Data", "An error occurred while writing the data to Firebase");
+            }
+        });
+    }
+
     //Returns the result of fetching Quiz data
     private void returnFetchQuizResult(ArrayList<Quiz> lstQuizzes){
         Bundle bundle = new Bundle();
@@ -137,5 +175,12 @@ public class FirebaseService extends IntentService {
         Bundle bundle = new Bundle();
         bundle.putSerializable(ACTION_WRITE_QUIZ, success);
         resultReceiver.send(ACTION_WRITE_QUIZ_RESULT_CODE, bundle);
+    }
+
+    //Returns the result of writing Statistic data
+    private void returnWriteStatisticResult(boolean success){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ACTION_WRITE_STATISTIC, success);
+        resultReceiver.send(ACTION_WRITE_STATISTIC_RESULT_CODE, bundle);
     }
 }

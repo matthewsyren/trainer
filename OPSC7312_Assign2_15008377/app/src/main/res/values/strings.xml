@@ -29,6 +29,8 @@
     <string name="list_view_text_option_three">Option Three: %s</string>
     <string name="list_view_text_option_four">Option Four: %s</string>
     <string name="list_view_text_correct_option">Correct Option: %d</string>
+    <string name="list_view_text_quiz_result">Result: %f</string>
+
     <string name="button_add_quiz">Add Quiz</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -48,5 +50,6 @@
     <string name="title_activity_quiz_fetcher">New Quizzes</string>
     <string name="title_activity_user_home">User Home</string>
     <string name="title_activity_quiz_manager">Quiz Manager</string>
+    <string name="title_activity_past_quiz">Past Quizzes</string>
 
 </resources>

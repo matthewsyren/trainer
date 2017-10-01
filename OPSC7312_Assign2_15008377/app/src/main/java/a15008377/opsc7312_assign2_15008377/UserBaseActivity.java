@@ -98,6 +98,9 @@ public class UserBaseActivity extends FragmentActivity
         else if(id == R.id.nav_quizzes){
             startActivity(new Intent(getApplicationContext(), QuizFetcherActivity.class));
         }
+        else if(id == R.id.nav_statistics){
+            startActivity(new Intent(getApplicationContext(), PastQuizActivity.class));
+        }
         else if(id == R.id.nav_sign_out){
             //Signs the user out of Firebase
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();

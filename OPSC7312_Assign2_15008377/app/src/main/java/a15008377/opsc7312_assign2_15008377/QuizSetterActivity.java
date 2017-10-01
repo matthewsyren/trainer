@@ -139,7 +139,7 @@ public class QuizSetterActivity extends AppCompatActivity {
 
         @Override
         protected void onReceiveResult ( int resultCode, Bundle resultData){
-            //Processes the result when the Stock has been written to the Firebase Database
+            //Processes the result when the Quiz has been written to the Firebase Database
             if (resultCode == FirebaseService.ACTION_WRITE_QUIZ_RESULT_CODE) {
                 Toast.makeText(getApplicationContext(), "Quiz uploaded successfully", Toast.LENGTH_LONG).show();
             }

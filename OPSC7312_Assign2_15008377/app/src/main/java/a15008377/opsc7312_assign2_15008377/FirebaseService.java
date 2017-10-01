@@ -66,6 +66,9 @@ public class FirebaseService extends IntentService {
                 String writeInformation = intent.getStringExtra(ACTION_WRITE_QUIZ_INFORMATION);
                 startActionWriteQuiz(quiz, writeInformation);
             }
+            else if(action.equals(ACTION_FETCH_STATISTIC)){
+                startActionFetchStatistic();
+            }
             else if(action.equals(ACTION_WRITE_STATISTIC)){
                 Statistic statistic = (Statistic) intent.getSerializableExtra(ACTION_WRITE_STATISTIC);
                 startActionWriteStatistic(statistic);
@@ -135,6 +138,39 @@ public class FirebaseService extends IntentService {
         });
     }
 
+    //Method fetches the Statistic data from the Firebase Database
+    private void startActionFetchStatistic(){
+        //Gets reference to Firebase
+        final ArrayList<Statistic> lstStatistics = new ArrayList<>();
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(new User(this).getUserKey());
+
+        //Adds Listeners for when the data is changed
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Loops through all Quizzes and adds them to the lstQuiz ArrayList
+                Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
+                for(DataSnapshot snapshot : lstSnapshots){
+                    //Retrieves the Quiz from Firebase and adds the Quiz to an ArrayList of Quiz objects
+                    Statistic statistic = snapshot.getValue(Statistic.class);
+                    statistic.setQuizKey(snapshot.getKey());
+                    lstStatistics.add(statistic);
+                }
+                //Removes the EventListener
+                databaseReference.removeEventListener(this);
+
+                //Returns result
+                returnFetchStatisticResult(lstStatistics);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.i("Data", "An error occurred while reading the data from Firebase");
+            }
+        });
+    }
+
     //Method writes a Statistic object to the Firebase database
     private void startActionWriteStatistic(final Statistic statistic){
         //Gets reference to Firebase
@@ -175,6 +211,13 @@ public class FirebaseService extends IntentService {
         Bundle bundle = new Bundle();
         bundle.putSerializable(ACTION_WRITE_QUIZ, success);
         resultReceiver.send(ACTION_WRITE_QUIZ_RESULT_CODE, bundle);
+    }
+
+    //Returns the result of fetching Statistic data
+    private void returnFetchStatisticResult(ArrayList<Statistic> lstStatistics){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ACTION_FETCH_STATISTIC, lstStatistics);
+        resultReceiver.send(ACTION_FETCH_STATISTIC_RESULT_CODE, bundle);
     }
 
     //Returns the result of writing Statistic data

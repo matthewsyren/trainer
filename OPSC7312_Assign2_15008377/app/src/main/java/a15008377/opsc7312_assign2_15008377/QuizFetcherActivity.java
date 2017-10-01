@@ -40,6 +40,7 @@ public class QuizFetcherActivity extends UserBaseActivity {
         }
     }
 
+    //Method displays the available Quizzes to the user
     public void displayQuizzes(final ArrayList<Quiz> lstQuizzes){
         try{
             QuizListViewAdapter quizListViewAdapter = new QuizListViewAdapter(this, lstQuizzes);

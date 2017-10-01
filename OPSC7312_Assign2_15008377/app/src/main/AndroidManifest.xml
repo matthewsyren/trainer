@@ -27,7 +27,7 @@
         <activity
             android:name=".AdminHomeActivity"
             android:label="@string/title_activity_admin_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".QuizFetcherActivity"
             android:label="@string/title_activity_quiz_fetcher"
@@ -35,12 +35,16 @@
         <activity
             android:name=".UserHomeActivity"
             android:label="@string/title_activity_user_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".QuizManagerActivity"
             android:label="@string/title_activity_quiz_manager"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".VideoMakerActivity"></activity>
+        <activity android:name=".VideoMakerActivity" />
+        <activity
+            android:name=".PastQuizActivity"
+            android:label="@string/title_activity_past_quiz"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -32,6 +32,24 @@ public class Statistic implements Serializable{
         return result;
     }
 
+    public void setQuizKey(String quizKey) {
+        this.quizKey = quizKey;
+    }
+
+    //Requests Quiz Items from the Firebase Database
+    public void requestStatistics(Context context, ResultReceiver resultReceiver){
+        try{
+            //Requests Statistic information from the FirebaseService class
+            Intent intent = new Intent(context, FirebaseService.class);
+            intent.setAction(FirebaseService.ACTION_FETCH_STATISTIC);
+            intent.putExtra(FirebaseService.RECEIVER, resultReceiver);
+            context.startService(intent);
+        }
+        catch(Exception exc){
+            Toast.makeText(context, exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     //Method calls the FirebaseService class and passes in a Statistic object that must be written to the Firebase Database
     public void requestWriteOfStatistic(Context context, ResultReceiver resultReceiver){
         try{

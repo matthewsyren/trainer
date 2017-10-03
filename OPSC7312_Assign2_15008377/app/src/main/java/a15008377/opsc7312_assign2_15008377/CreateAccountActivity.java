@@ -69,12 +69,14 @@ public class CreateAccountActivity extends AppCompatActivity {
     public void createAccountOnClick(View view){
         try{
             //View assignments
+            EditText txtFullName = (EditText) findViewById(R.id.text_create_account_full_name);
             EditText txtEmail = (EditText) findViewById(R.id.text_create_account_email);
             EditText txtPassword = (EditText) findViewById(R.id.text_create_account_password);
             EditText txtConfirmPassword = (EditText) findViewById(R.id.text_create_account_confirm_password);
             CheckBox chkAdminRights = (CheckBox) findViewById(R.id.check_box_admin_rights);
 
             //Fetches the contents of the Views
+            String fullName = txtFullName.getText().toString();
             String email = txtEmail.getText().toString();
             String password = txtPassword.getText().toString();
             String confirmPassword = txtConfirmPassword.getText().toString();
@@ -85,7 +87,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
             //Creates an account if the user's passwords match and they have entered valid data
             if(password.equals(confirmPassword)){
-                final User user = new User(email, password, adminRights);
+                final User user = new User(fullName, email, password, adminRights);
                 firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -111,7 +113,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         }
                         else if(task.isSuccessful()){
                             //Registers the user in the Firebase authentication for this app
-                            pushUser(user.getUserEmailAddress(), user.isUserAdminRights());
+                            pushUser(user.getUserFullName(), user.getUserEmailAddress(), user.isUserAdminRights());
                         }
                     }
                 });
@@ -127,7 +129,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     //Method generates a unique key for the created user, and writes the key and its value (the user's email) to the 'Users' child node in the Firebase database
-    public void pushUser(String emailAddress, boolean adminRights){
+    public void pushUser(String fullName, String emailAddress, boolean adminRights){
         try{
             //Establishes a connection to the Firebase Database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -136,6 +138,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             //Generates the user's unique key and saves the value (the user's email address and whether they have admin rights) to the Firebase database
             String key =  databaseReference.push().getKey();
             Map <String,String> hashMap = new HashMap<>();
+            hashMap.put("userFullName", fullName);
             hashMap.put("userEmailAddress", emailAddress);
             hashMap.put("userAdminRights", String.valueOf(adminRights));
             databaseReference.child(key).setValue(hashMap);
@@ -150,8 +153,14 @@ public class CreateAccountActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Account successfully created!", Toast.LENGTH_LONG).show();
 
             //Takes the user to the next activity
-           // Intent intent = new Intent(CreateAccountActivity.this, AdminHomeActivity.class);
-            //startActivity(intent);
+            Intent intent;
+            if(adminRights){
+                intent = new Intent(CreateAccountActivity.this, AdminHomeActivity.class);
+            }
+            else{
+                intent = new Intent(CreateAccountActivity.this, QuizFetcherActivity.class);
+            }
+            startActivity(intent);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

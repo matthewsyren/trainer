@@ -93,13 +93,13 @@ public class UserBaseActivity extends FragmentActivity
 
         //Opens the appropriate Activity based on the menu item clicked in the Navigation Drawer
         if(id == R.id.nav_home){
-            startActivity(new Intent(getApplicationContext(), UserHomeActivity.class));
-        }
-        else if(id == R.id.nav_quizzes){
             startActivity(new Intent(getApplicationContext(), QuizFetcherActivity.class));
         }
-        else if(id == R.id.nav_statistics){
+        else if(id == R.id.nav_quizzes){
             startActivity(new Intent(getApplicationContext(), PastQuizActivity.class));
+        }
+        else if(id == R.id.nav_statistics){
+            startActivity(new Intent(getApplicationContext(), UserStatisticsActivity.class));
         }
         else if(id == R.id.nav_sign_out){
             //Signs the user out of Firebase

@@ -29,9 +29,9 @@ public class QuizFetcherActivity extends UserBaseActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_quiz_fetcher);
 
-            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Quizzes
+            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Home
             super.onCreateDrawer();
-            super.setSelectedNavItem(R.id.nav_quizzes);
+            super.setSelectedNavItem(R.id.nav_home);
 
             new Quiz().requestQuizzes(null, this, new DataReceiver(new Handler()));
         }

@@ -26,7 +26,9 @@ import java.util.ArrayList;
 public class FirebaseService extends IntentService {
     //Declarations
     public static final String RECEIVER = "a15008377.opsc7312assign2_15008377.RECEIVER";
-    public static final String QUIZ_ID = "a15008377.opsc7312assign2_15008377.SEARCH_TERM";
+    public static final String QUIZ_ID = "a15008377.opsc7312assign2_15008377.QUIZ_ID";
+    public static final String USER_KEY = "a15008377.opsc7312assign2_15008377.USER_KEY";
+
 
     //Action Declarations
     public static final String ACTION_FETCH_QUIZ =  "a15008377.opsc7312assign2_15008377.action.FETCH_QUIZ";
@@ -34,13 +36,14 @@ public class FirebaseService extends IntentService {
     public static final String ACTION_WRITE_QUIZ_INFORMATION = "a15008377.opsc7312assign2_15008377.action.WRITE_QUIZ_INFORMATION";
     public static final String ACTION_FETCH_STATISTIC =  "a15008377.opsc7312assign2_15008377.action.FETCH_STATISTIC";
     public static final String ACTION_WRITE_STATISTIC =  "a15008377.opsc7312assign2_15008377.action.WRITE_STATISTIC";
-
+    public static final String ACTION_FETCH_USER =  "a15008377.opsc7312assign2_15008377.action.FETCH_USER";
 
     //Result Codes and ResultReceiver
     public static final int ACTION_FETCH_QUIZ_RESULT_CODE = 1;
     public static final int ACTION_WRITE_QUIZ_RESULT_CODE = 2;
     public static final int ACTION_FETCH_STATISTIC_RESULT_CODE = 3;
     public static final int ACTION_WRITE_STATISTIC_RESULT_CODE = 4;
+    public static final int ACTION_FETCH_USER_RESULT_CODE = 5;
     private ResultReceiver resultReceiver;
 
     //Constructor
@@ -67,11 +70,15 @@ public class FirebaseService extends IntentService {
                 startActionWriteQuiz(quiz, writeInformation);
             }
             else if(action.equals(ACTION_FETCH_STATISTIC)){
-                startActionFetchStatistic();
+                String userKey = intent.getStringExtra(USER_KEY);
+                startActionFetchStatistic(userKey);
             }
             else if(action.equals(ACTION_WRITE_STATISTIC)){
                 Statistic statistic = (Statistic) intent.getSerializableExtra(ACTION_WRITE_STATISTIC);
                 startActionWriteStatistic(statistic);
+            }
+            else if(action.equals(ACTION_FETCH_USER)){
+                startActionFetchUser();
             }
         }
     }
@@ -139,11 +146,11 @@ public class FirebaseService extends IntentService {
     }
 
     //Method fetches the Statistic data from the Firebase Database
-    private void startActionFetchStatistic(){
+    private void startActionFetchStatistic(final String userKey){
         //Gets reference to Firebase
         final ArrayList<Statistic> lstStatistics = new ArrayList<>();
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(new User(this).getUserKey());
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child("Results");
 
         //Adds Listeners for when the data is changed
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -152,10 +159,15 @@ public class FirebaseService extends IntentService {
                 //Loops through all Quizzes and adds them to the lstQuiz ArrayList
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
-                    //Retrieves the Quiz from Firebase and adds the Quiz to an ArrayList of Quiz objects
-                    Statistic statistic = snapshot.getValue(Statistic.class);
-                    statistic.setQuizKey(snapshot.getKey());
-                    lstStatistics.add(statistic);
+                    if(userKey == null || snapshot.getKey().equals(userKey)) {
+                        for(DataSnapshot statisticSnapshot : snapshot.getChildren()){
+                            //Retrieves the Statistic from Firebase and adds the Statistic to an ArrayList of Statistic objects
+                            Statistic statistic = statisticSnapshot.getValue(Statistic.class);
+                            statistic.setQuizKey(statisticSnapshot.getKey());
+                            statistic.setUserKey(snapshot.getKey());
+                            lstStatistics.add(statistic);
+                        }
+                    }
                 }
                 //Removes the EventListener
                 databaseReference.removeEventListener(this);
@@ -175,7 +187,7 @@ public class FirebaseService extends IntentService {
     private void startActionWriteStatistic(final Statistic statistic){
         //Gets reference to Firebase
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = firebaseDatabase.getReference().child(new User(this).getUserKey());
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child("Results").child(new User(this).getUserKey());
 
         //Adds Listeners for when the data is changed
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -195,6 +207,42 @@ public class FirebaseService extends IntentService {
             @Override
             public void onCancelled(DatabaseError error) {
                 Log.i("Data", "An error occurred while writing the data to Firebase");
+            }
+        });
+    }
+
+    //Method fetches the User data from the Firebase Database
+    private void startActionFetchUser(){
+        //Gets reference to Firebase
+        final ArrayList<User> lstUsers = new ArrayList<>();
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child("Users");
+
+        //Adds Listeners for when the data is changed
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Loops through all Quizzes and adds them to the lstQuiz ArrayList
+                Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
+                for(DataSnapshot snapshot : lstSnapshots){
+                    //Retrieves the Quiz from Firebase and adds the Quiz to an ArrayList of Quiz objects
+                    String fullName = (String) snapshot.child("userFullName").getValue();
+                    String adminRights = (String) snapshot.child("userAdminRights").getValue();
+                    String emailAddress = (String) snapshot.child("userEmailAddress").getValue();
+                    User user = new User(fullName, emailAddress, "", Boolean.valueOf(adminRights));
+                    user.setUserKey(snapshot.getKey());
+                    lstUsers.add(user);
+                }
+                //Removes the EventListener
+                databaseReference.removeEventListener(this);
+
+                //Returns result
+                returnFetchUserResult(lstUsers);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.i("Data", "An error occurred while reading the data from Firebase");
             }
         });
     }
@@ -225,5 +273,12 @@ public class FirebaseService extends IntentService {
         Bundle bundle = new Bundle();
         bundle.putSerializable(ACTION_WRITE_STATISTIC, success);
         resultReceiver.send(ACTION_WRITE_STATISTIC_RESULT_CODE, bundle);
+    }
+
+    //Returns the result of fetching User data
+    private void returnFetchUserResult(ArrayList<User> lstUsers){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ACTION_FETCH_USER, lstUsers);
+        resultReceiver.send(ACTION_FETCH_USER_RESULT_CODE, bundle);
     }
 }

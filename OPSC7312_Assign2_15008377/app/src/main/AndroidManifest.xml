@@ -44,6 +44,14 @@
         <activity
             android:name=".PastQuizActivity"
             android:label="@string/title_activity_past_quiz"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UserStatisticsActivity"
+            android:label="@string/title_activity_user_statistics"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AdminStatisticsActivity"
+            android:label="@string/title_activity_admin_statistics"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

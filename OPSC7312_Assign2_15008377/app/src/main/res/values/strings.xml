@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Teaching App</string>
 
+    <string name="prompt_full_name">Enter your full name</string>
     <string name="prompt_email">Enter your email address</string>
     <string name="prompt_password">Enter a password</string>
     <string name="prompt_confirm_password">Confirm your password</string>
@@ -29,7 +30,9 @@
     <string name="list_view_text_option_three">Option Three: %s</string>
     <string name="list_view_text_option_four">Option Four: %s</string>
     <string name="list_view_text_correct_option">Correct Option: %d</string>
-    <string name="list_view_text_quiz_result">Result: %f</string>
+    <string name="list_view_text_quiz_result">Result: %.2f</string>
+    <string name="list_view_text_user_name">Name: %s</string>
+    <string name="list_view_text_user_average_result">Average: %.2f</string>
 
     <string name="button_add_quiz">Add Quiz</string>
 
@@ -51,5 +54,7 @@
     <string name="title_activity_user_home">User Home</string>
     <string name="title_activity_quiz_manager">Quiz Manager</string>
     <string name="title_activity_past_quiz">Past Quizzes</string>
+    <string name="title_activity_user_statistics">UserStatisticsActivity</string>
+    <string name="title_activity_admin_statistics">AdminStatisticsActivity</string>
 
 </resources>

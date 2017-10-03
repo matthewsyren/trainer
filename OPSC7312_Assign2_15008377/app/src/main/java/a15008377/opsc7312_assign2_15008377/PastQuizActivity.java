@@ -32,9 +32,9 @@ public class PastQuizActivity extends UserHomeActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_past_quiz);
 
-            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Statistics
+            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Quizzes
             super.onCreateDrawer();
-            super.setSelectedNavItem(R.id.nav_statistics);
+            super.setSelectedNavItem(R.id.nav_quizzes);
             fetchPastQuizzes();
         }
         catch(Exception exc){
@@ -45,7 +45,7 @@ public class PastQuizActivity extends UserHomeActivity {
     //Method fetches the Quizzes that the user has already taken
     public void fetchPastQuizzes(){
         try{
-            new Statistic().requestStatistics(this, new DataReceiver(new Handler()));
+            new Statistic().requestStatistics(new User(this).getUserKey(), this, new DataReceiver(new Handler()));
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

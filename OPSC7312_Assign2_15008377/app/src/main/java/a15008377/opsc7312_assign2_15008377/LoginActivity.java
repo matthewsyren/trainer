@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         //Fetches the user's key from Firebase and then calls the writeToSharedPreferences method once the key is fetched
-                        user.setUserKey(loginActivity);
+                        user.setKey(loginActivity);
                     }
                     else{
                         Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -140,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                 intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
             }
             else{
-                intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+                intent = new Intent(LoginActivity.this, QuizFetcherActivity.class);
             }
             startActivity(intent);
         }

@@ -9,7 +9,9 @@
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
@@ -21,13 +23,15 @@ import com.google.firebase.database.ValueEventListener;
 @SuppressWarnings("WeakerAccess")
 public class User {
     //Declarations
+    private String userFullName;
     private String userEmailAddress;
     private String userKey;
     private String userPassword;
     private boolean userAdminRights;
 
     //Constructor (used when the user is creating an account)
-    public User(String userEmailAddress, String userPassword, boolean userAdminRights){
+    public User(String userFullName, String userEmailAddress, String userPassword, boolean userAdminRights){
+        this.userFullName = userFullName;
         this.userEmailAddress = userEmailAddress;
         this.userPassword = userPassword;
         this.userAdminRights = userAdminRights;
@@ -37,6 +41,10 @@ public class User {
     public User(String userEmailAddress, String userPassword) {
         this.userEmailAddress = userEmailAddress;
         this.userPassword = userPassword;
+    }
+
+    public User(){
+
     }
 
     //Default constructor (used when the user has already signed in, context is used to get the user's key from SharedPreferences)
@@ -49,6 +57,10 @@ public class User {
     }
 
     //Accessor methods
+    public String getUserFullName() {
+        return userFullName;
+    }
+
     public String getUserEmailAddress() {
         return userEmailAddress;
     }
@@ -65,8 +77,13 @@ public class User {
         return userAdminRights;
     }
 
+    //Setter method
+    public void setUserKey(String userKey) {
+        this.userKey = userKey;
+    }
+
     //Method gets the unique key used by Firebase to store information about the user signed in
-    public void setUserKey(final LoginActivity context){
+    public void setKey(final LoginActivity context){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference().child("Users");
 
@@ -97,13 +114,14 @@ public class User {
         });
     }
 
-    //Method stores the user's username in the SharedPreferences of the device, which will keep them signed in every time they open the app
-    public void setActiveUsername(String username, Context context){
+    //Requests Users from the Firebase Database
+    public void requestUsers(Context context, ResultReceiver resultReceiver){
         try{
-            SharedPreferences preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("userEmail", username);
-            editor.apply();
+            //Requests Statistic information from the FirebaseService class
+            Intent intent = new Intent(context, FirebaseService.class);
+            intent.setAction(FirebaseService.ACTION_FETCH_USER);
+            intent.putExtra(FirebaseService.RECEIVER, resultReceiver);
+            context.startService(intent);
         }
         catch(Exception exc){
             Toast.makeText(context, exc.getMessage(), Toast.LENGTH_LONG).show();

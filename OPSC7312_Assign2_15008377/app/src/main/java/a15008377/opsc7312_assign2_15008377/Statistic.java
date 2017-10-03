@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 
 public class Statistic implements Serializable{
+    private String userKey;
     private String quizKey;
     private double result;
 
@@ -32,16 +33,25 @@ public class Statistic implements Serializable{
         return result;
     }
 
+    public String getUserKey() {
+        return userKey;
+    }
+
+    public void setUserKey(String userKey) {
+        this.userKey = userKey;
+    }
+
     public void setQuizKey(String quizKey) {
         this.quizKey = quizKey;
     }
 
     //Requests Quiz Items from the Firebase Database
-    public void requestStatistics(Context context, ResultReceiver resultReceiver){
+    public void requestStatistics(String searchTerm, Context context, ResultReceiver resultReceiver){
         try{
             //Requests Statistic information from the FirebaseService class
             Intent intent = new Intent(context, FirebaseService.class);
             intent.setAction(FirebaseService.ACTION_FETCH_STATISTIC);
+            intent.putExtra(FirebaseService.USER_KEY, searchTerm);
             intent.putExtra(FirebaseService.RECEIVER, resultReceiver);
             context.startService(intent);
         }

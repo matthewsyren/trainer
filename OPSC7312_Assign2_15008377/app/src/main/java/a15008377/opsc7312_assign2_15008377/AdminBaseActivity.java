@@ -96,7 +96,7 @@ public class AdminBaseActivity extends FragmentActivity
             startActivity(new Intent(getApplicationContext(), AdminHomeActivity.class));
         }
         else if(id == R.id.nav_quizzes){
-            startActivity(new Intent(getApplicationContext(), QuizSetterActivity.class));
+            startActivity(new Intent(getApplicationContext(), QuizManagerActivity.class));
         }
         else if(id == R.id.nav_statistics){
             startActivity(new Intent(getApplicationContext(), AdminStatisticsActivity.class));

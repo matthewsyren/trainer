@@ -52,7 +52,8 @@
         <activity
             android:name=".AdminStatisticsActivity"
             android:label="@string/title_activity_admin_statistics"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AdminSpecificStatisticsActivity" />
     </application>
 
 </manifest>

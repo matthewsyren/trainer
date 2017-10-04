@@ -1,8 +1,11 @@
 package a15008377.opsc7312_assign2_15008377;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -83,6 +86,36 @@ public class QuizActivity extends AppCompatActivity {
             double result = Math.round(percentage);
             Statistic statistic = new Statistic(quiz.getKey(), result);
             statistic.requestWriteOfStatistic(this, new DataReceiver(new Handler()));
+
+            //Displays popup that gives the User their result and asks them if they'd like to take the Quiz again
+            AlertDialog alertDialog = new AlertDialog.Builder(QuizActivity.this).create();
+            alertDialog.setTitle("Quiz Complete...");
+            alertDialog.setMessage("You scored " + result + "%. \n\nWould you like to take the quiz again?");
+
+            //Creates OnClickListener for the Dialog message
+            DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int button) {
+                    Intent intent;
+                    switch(button){
+                        case AlertDialog.BUTTON_POSITIVE:
+                            intent = getIntent();
+                            finish();
+                            startActivity(intent);
+                            break;
+                        case AlertDialog.BUTTON_NEGATIVE:
+                            intent = new Intent(QuizActivity.this, QuizFetcherActivity.class);
+                            startActivity(intent);
+                            break;
+                    }
+                }
+            };
+
+            //Assigns buttons and OnClickListener for the AlertDialog and displays the AlertDialog
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", dialogOnClickListener);
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", dialogOnClickListener);
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -158,12 +191,14 @@ public class QuizActivity extends AppCompatActivity {
             //Gets correct answer and turns the correct answer green, and the user's answer red if their answer is incorrect
             final int correctAnswer = quiz.getLstQuestions().get(questionNumber).getAnswerPosition();
             buttons[correctAnswer].setBackgroundResource(R.drawable.button_rounded_correct_answer);
+            buttons[correctAnswer].setTextColor(getResources().getColor(R.color.black));
             if(optionChosen != correctAnswer){
                 buttons[optionChosen].setBackgroundResource(R.drawable.button_rounded_incorrect_answer);
+                buttons[optionChosen].setTextColor(getResources().getColor(R.color.black));
             }
 
             //Pauses the program to allow the user to see the correct answer
-            new CountDownTimer(5000, 50) {
+            new CountDownTimer(3500, 100) {
                 @Override
                 public void onTick(long arg0) {
                 }
@@ -173,6 +208,8 @@ public class QuizActivity extends AppCompatActivity {
                     //Resets the buttons back to their normal colours and displays the next question
                     buttons[correctAnswer].setBackgroundResource(R.drawable.button_rounded);
                     buttons[optionChosen].setBackgroundResource(R.drawable.button_rounded);
+                    buttons[correctAnswer].setTextColor(getResources().getColor(R.color.colorPrimary));
+                    buttons[optionChosen].setTextColor(getResources().getColor(R.color.colorPrimary));
                     questionNumber++;
                     displayQuiz();
                 }

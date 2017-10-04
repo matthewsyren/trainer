@@ -1,5 +1,7 @@
 package a15008377.opsc7312_assign2_15008377;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -14,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ public class UserStatisticsActivity extends UserBaseActivity {
         super.onCreateDrawer();
         super.setSelectedNavItem(R.id.nav_statistics);
 
+        //Fetches the User's Statistics
         new Statistic().requestStatistics(new User(this).getUserKey(), this, new DataReceiver(new Handler()));
     }
 
@@ -42,7 +46,21 @@ public class UserStatisticsActivity extends UserBaseActivity {
             }
             double average = total / lstStatistics.size();
             TextView txtAverage = (TextView) findViewById(R.id.text_statistics);
-            txtAverage.setText("Average: " + average + "%");
+            txtAverage.setText(getResources().getString(R.string.text_user_average_result, average));
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setMax(100);
+
+            //Changes colour of ProgressBar based on average score (learnt from https://www.android-examples.com/change-horizontal-progress-bar-color-in-android-programmatically/)
+            if(average >= 80){
+                progressBar.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+            }
+            else if(average >= 50){
+                progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+            }
+            else{
+                progressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+            }
+            progressBar.setProgress((int) Math.round(average));
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

@@ -1,43 +1,35 @@
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Bundle;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class PastQuizActivity extends UserHomeActivity {
+public class AdminSpecificStatisticsActivity extends AppCompatActivity {
+    //Declarations
     ArrayList<Statistic> lstStatistics;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_admin_specific_statistics);
+
+        //Fetches the user's Statistics
+        fetchUserStatistics();
+    }
+
+    //Method fetches the user's Statistics
+    public void fetchUserStatistics(){
         try{
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_past_quiz);
-
-            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Quizzes
-            super.onCreateDrawer();
-            super.setSelectedNavItem(R.id.nav_quizzes);
-
-            //Fetches the user's Statistics
-            new Statistic().requestStatistics(new User(this).getUserKey(), this, new DataReceiver(new Handler()));
+            Bundle bundle = getIntent().getExtras();
+            String userKey = bundle.getString("userKey");
+            new Statistic().requestStatistics(userKey, this, new DataReceiver(new Handler()));
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -60,18 +52,8 @@ public class PastQuizActivity extends UserHomeActivity {
             }
 
             //Sets the Adapter for the ListVeiw
-            final ListView listView = (ListView) findViewById(R.id.list_view_past_quizzes);
+            final ListView listView = (ListView) findViewById(R.id.list_view_user_results);
             listView.setAdapter(pastQuizListViewAdapter);
-
-            //Makes the ListView clickable to allow the user to retake a Quiz
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(PastQuizActivity.this, QuizActivity.class);
-                    intent.putExtra("quiz", (Quiz) listView.getAdapter().getItem(position));
-                    startActivity(intent);
-                }
-            });
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

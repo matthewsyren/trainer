@@ -30,9 +30,11 @@
     <string name="list_view_text_option_three">Option Three: %s</string>
     <string name="list_view_text_option_four">Option Four: %s</string>
     <string name="list_view_text_correct_option">Correct Option: %d</string>
-    <string name="list_view_text_quiz_result">Result: %.2f</string>
+    <string name="list_view_text_quiz_result">Result: %.2f%%</string>
     <string name="list_view_text_user_name">Name: %s</string>
-    <string name="list_view_text_user_average_result">Average: %.2f</string>
+    <string name="list_view_text_user_average_result">Average: %.2f%%</string>
+    <string name="text_user_average_result">Average: %.2f%%</string>
+
 
     <string name="button_add_quiz">Add Quiz</string>
 
@@ -56,5 +58,6 @@
     <string name="title_activity_past_quiz">Past Quizzes</string>
     <string name="title_activity_user_statistics">UserStatisticsActivity</string>
     <string name="title_activity_admin_statistics">AdminStatisticsActivity</string>
+    <string name="title_activity_quiz_viewer">QuizViewerActivity</string>
 
 </resources>

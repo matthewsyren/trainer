@@ -11,16 +11,15 @@ package a15008377.opsc7312_assign2_15008377;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.os.ResultReceiver;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class FirebaseService extends IntentService {
@@ -28,7 +27,6 @@ public class FirebaseService extends IntentService {
     public static final String RECEIVER = "a15008377.opsc7312assign2_15008377.RECEIVER";
     public static final String QUIZ_ID = "a15008377.opsc7312assign2_15008377.QUIZ_ID";
     public static final String USER_KEY = "a15008377.opsc7312assign2_15008377.USER_KEY";
-
 
     //Action Declarations
     public static final String ACTION_FETCH_QUIZ =  "a15008377.opsc7312assign2_15008377.action.FETCH_QUIZ";

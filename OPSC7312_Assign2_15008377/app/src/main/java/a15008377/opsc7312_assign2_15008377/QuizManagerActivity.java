@@ -43,7 +43,7 @@ public class QuizManagerActivity extends AdminBaseActivity {
     //Method takes the user to the QuizSetterActivity
     public void addQuizOnClick(View view){
         try{
-            Intent intent = new Intent(QuizManagerActivity.this, QuizSetterActivity.class);
+            Intent intent = new Intent(QuizManagerActivity.this, VideoMakerActivity.class);
             startActivity(intent);
         }
         catch(Exception exc){
@@ -54,7 +54,7 @@ public class QuizManagerActivity extends AdminBaseActivity {
     //Method displays the available Quizzes to the user
     public void displayQuizzes(final ArrayList<Quiz> lstQuizzes){
         try{
-            QuizListViewAdapter quizListViewAdapter = new QuizListViewAdapter(this, lstQuizzes);
+            QuizManagementListViewAdapter quizListViewAdapter = new QuizManagementListViewAdapter(this, lstQuizzes);
             ListView listView = (ListView) findViewById(R.id.list_view_quizzes);
             listView.setAdapter(quizListViewAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

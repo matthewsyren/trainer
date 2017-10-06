@@ -101,6 +101,9 @@ public class UserBaseActivity extends FragmentActivity
         else if(id == R.id.nav_statistics){
             startActivity(new Intent(getApplicationContext(), UserStatisticsActivity.class));
         }
+        else if(id == R.id.nav_videos){
+            startActivity(new Intent(getApplicationContext(), VideoViewerActivity.class));
+        }
         else if(id == R.id.nav_sign_out){
             //Signs the user out of Firebase
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();

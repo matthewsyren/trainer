@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
             //Takes the user to the appropriate Activity (based on admin rights)
             Intent intent;
             if(adminRights){
-                intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
+                intent = new Intent(LoginActivity.this, QuizManagerActivity.class);
             }
             else{
                 intent = new Intent(LoginActivity.this, QuizFetcherActivity.class);

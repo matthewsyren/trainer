@@ -93,9 +93,6 @@ public class AdminBaseActivity extends FragmentActivity
 
         //Opens the appropriate Activity based on the menu item clicked in the Navigation Drawer
         if(id == R.id.nav_home){
-            startActivity(new Intent(getApplicationContext(), AdminHomeActivity.class));
-        }
-        else if(id == R.id.nav_quizzes){
             startActivity(new Intent(getApplicationContext(), QuizManagerActivity.class));
         }
         else if(id == R.id.nav_statistics){

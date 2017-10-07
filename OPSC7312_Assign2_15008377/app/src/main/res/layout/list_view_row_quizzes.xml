@@ -17,7 +17,8 @@
         app:cardCornerRadius="@dimen/card_view_corner_margin">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants">
             <TextView
                 android:id="@+id/text_quiz_name"
                 android:layout_width="wrap_content"
@@ -37,6 +38,15 @@
                 android:layout_centerVertical="true"
                 android:padding="@dimen/button_padding"
                 android:tint="@color/colorPrimary"/>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:indeterminate="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/button_margin"/>
         </RelativeLayout>
 
 

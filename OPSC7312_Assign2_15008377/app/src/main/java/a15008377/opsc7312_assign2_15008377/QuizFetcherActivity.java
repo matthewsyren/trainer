@@ -12,7 +12,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class QuizFetcherActivity extends UserBaseActivity {
-
+    //Declarations
+    ArrayList<Quiz> lstQuizzes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
@@ -32,9 +33,27 @@ public class QuizFetcherActivity extends UserBaseActivity {
     }
 
     //Method displays the available Quizzes to the user
-    public void displayQuizzes(final ArrayList<Quiz> lstQuizzes){
+    public void displayQuizzes(final ArrayList<Statistic> lstStatistics){
         try{
-            QuizListViewAdapter quizListViewAdapter = new QuizListViewAdapter(this, lstQuizzes);
+            //Sets an empty adapter
+            QuizListViewAdapter quizListViewAdapter = new QuizListViewAdapter(this, new ArrayList<Quiz>());
+            boolean found;
+
+            //Adds Quizzes that haven't been taken by the user yet to the adapter
+            for(Quiz quiz : lstQuizzes){
+                found = false;
+                for(Statistic statistic : lstStatistics){
+                    if(quiz.getKey().equals(statistic.getQuizKey())){
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found){
+                    quizListViewAdapter.add(quiz);
+                }
+            }
+
+            //Sets the adapter for the ListView
             ListView listView = (ListView) findViewById(R.id.list_view_quizzes);
             listView.setAdapter(quizListViewAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -60,8 +79,12 @@ public class QuizFetcherActivity extends UserBaseActivity {
         protected void onReceiveResult ( int resultCode, Bundle resultData){
             //Processes the result when the Stock has been written to the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE) {
-                ArrayList<Quiz> lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
-                displayQuizzes(lstQuizzes);
+                lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
+                new Statistic().requestStatistics(new User(getApplicationContext()).getUserKey(), getApplicationContext(), new DataReceiver(new Handler()));
+            }
+            else if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
+                ArrayList<Statistic> lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
+                displayQuizzes(lstStatistics);
             }
         }
     }

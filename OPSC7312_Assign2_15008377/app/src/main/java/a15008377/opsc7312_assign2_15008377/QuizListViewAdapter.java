@@ -7,11 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,10 +22,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Matthew Syrén on 2017/09/16.
@@ -55,6 +60,7 @@ public class QuizListViewAdapter extends ArrayAdapter {
         //View declarations
         TextView txtQuizName;
         final ImageButton btnDownloadVideo;
+        final ProgressBar progressBar;
 
         //Inflates the list_row view for the ListView
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
@@ -63,6 +69,9 @@ public class QuizListViewAdapter extends ArrayAdapter {
         //View assignments
         txtQuizName = (TextView) convertView.findViewById(R.id.text_quiz_name);
         btnDownloadVideo = (ImageButton) convertView.findViewById(R.id.button_download_video);
+        btnDownloadVideo.setFocusable(false);
+        progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         boolean fileDownloaded = checkForFile(position);
 
@@ -72,6 +81,33 @@ public class QuizListViewAdapter extends ArrayAdapter {
         else{
             btnDownloadVideo.setImageResource(R.drawable.ic_file_download_black_24dp);
         }
+
+        final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        final StorageReference store = storageReference.child(lstQuizzes.get(position).getKey() + ".mp4");
+
+        //Compares the last modified field of the file to the video's time created timestamp to ensure that the user has the latest video for the Quiz
+        store.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                //Fetches downloaded videos
+                File[] files = context.getFilesDir().listFiles();
+
+                //Loops through downloaded files and deletes a video if it was modified before the timestamp of the Quiz's video (in other words, there is a new video)
+                for(int i = 0; i < files.length; i++){
+                    if(files[i].getName().equals(lstQuizzes.get(position).getKey() + ".mp4") && files[i].lastModified() < storageMetadata.getCreationTimeMillis()){
+                        btnDownloadVideo.setImageResource(R.drawable.ic_file_download_black_24dp);
+                        files[i].delete();
+                        Toast.makeText(context, "The video for " + lstQuizzes.get(position).getName() + " has been updated, please download it if you haven't taken the Quiz", Toast.LENGTH_LONG).show();
+                        notifyDataSetChanged();
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Metadata download failed", Toast.LENGTH_LONG).show();
+            }
+        });
 
         btnDownloadVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +120,9 @@ public class QuizListViewAdapter extends ArrayAdapter {
                 }
                 else{
                     try{
+                        progressBar.setVisibility(View.VISIBLE);
+                        btnDownloadVideo.setVisibility(View.INVISIBLE);
+
                         //Downloads file if file hasn't been downloaded already
                         notificationBuilder.setOngoing(false)
                                 .setContentTitle("Teaching")
@@ -94,15 +133,16 @@ public class QuizListViewAdapter extends ArrayAdapter {
                         //Display the notification
                         notification = notificationBuilder.build();
                         notificationManager.notify(notificationID, notification);
-                        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                        StorageReference store = storageReference.child(lstQuizzes.get(position).getKey() + ".mp4");
 
+                        //Downloads the video and saves it into internal storage with the name of the Quiz's key
                         File file = new File(context.getFilesDir() , lstQuizzes.get(position).getKey() + ".mp4");
                         store.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                 Toast.makeText(context, "Video successfully downloaded!", Toast.LENGTH_LONG).show();
                                 btnDownloadVideo.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+                                btnDownloadVideo.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
                             }
                         }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
@@ -124,6 +164,8 @@ public class QuizListViewAdapter extends ArrayAdapter {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(context, "Failed", Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.INVISIBLE);
+                                btnDownloadVideo.setVisibility(View.VISIBLE);
                             }
                         });
                     }
@@ -141,11 +183,12 @@ public class QuizListViewAdapter extends ArrayAdapter {
         return convertView;
     }
 
+    //Method checks to see if the video has already been downloaded
     public boolean checkForFile(int position){
         File[] files = context.getFilesDir().listFiles();
-
         boolean fileDownloaded = false;
 
+        //Loops through downloaded files to see if the video has already been downloaded
         for(int i = 0; i < files.length; i++){
             if(files[i].getName().equals(lstQuizzes.get(position).getKey() + ".mp4")){
                 fileDownloaded = true;

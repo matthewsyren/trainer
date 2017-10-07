@@ -38,6 +38,10 @@ public class VideoMakerActivity extends AppCompatActivity {
 
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationBuilder = new Notification.Builder(getApplicationContext());
+            Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takeVideoIntent, 1);
+            }
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -54,6 +58,8 @@ public class VideoMakerActivity extends AppCompatActivity {
                 videoView.setVideoURI(videoUri);
                 videoView.requestFocus();
                 uploadVideo(videoUri);
+                Intent newIntent = new Intent(VideoMakerActivity.this, QuizManagerActivity.class);
+                startActivity(newIntent);
             }
         }
         catch(Exception exc){

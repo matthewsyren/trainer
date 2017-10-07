@@ -155,7 +155,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             //Takes the user to the next activity
             Intent intent;
             if(adminRights){
-                intent = new Intent(CreateAccountActivity.this, AdminHomeActivity.class);
+                intent = new Intent(CreateAccountActivity.this, QuizManagerActivity.class);
             }
             else{
                 intent = new Intent(CreateAccountActivity.this, QuizFetcherActivity.class);

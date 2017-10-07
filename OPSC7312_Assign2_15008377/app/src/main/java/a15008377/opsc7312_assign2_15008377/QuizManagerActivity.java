@@ -29,9 +29,9 @@ public class QuizManagerActivity extends AdminBaseActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_quiz_manager);
 
-            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Quizzes
+            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Home
             super.onCreateDrawer();
-            super.setSelectedNavItem(R.id.nav_quizzes);
+            super.setSelectedNavItem(R.id.nav_home);
 
             new Quiz().requestQuizzes(null, this, new DataReceiver(new Handler()));
         }
@@ -43,7 +43,7 @@ public class QuizManagerActivity extends AdminBaseActivity {
     //Method takes the user to the QuizSetterActivity
     public void addQuizOnClick(View view){
         try{
-            Intent intent = new Intent(QuizManagerActivity.this, VideoMakerActivity.class);
+            Intent intent = new Intent(QuizManagerActivity.this, QuizSetterActivity.class);
             startActivity(intent);
         }
         catch(Exception exc){

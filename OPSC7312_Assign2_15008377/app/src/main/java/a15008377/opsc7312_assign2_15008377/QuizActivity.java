@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,12 +21,14 @@ import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class QuizActivity extends AppCompatActivity {
+public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
     //Declarations
     Quiz quiz;
     int questionNumber = 0;
     int correctAnswers = 0;
+    TextToSpeech textToSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,16 @@ public class QuizActivity extends AppCompatActivity {
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method reads the question out loud using TextToSpeech
+    public void readQuestionOnClick(View view){
+        try{
+            textToSpeech = new TextToSpeech(this, this);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(),exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -218,6 +231,20 @@ public class QuizActivity extends AppCompatActivity {
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    //Reads the question out loud to the user
+    @Override
+    public void onInit(int status) {
+        TextView txtQuestion = (TextView) findViewById(R.id.text_question);
+        Button btnOptionOne = (Button) findViewById(R.id.button_option_one);
+        Button btnOptionTwo = (Button) findViewById(R.id.button_option_two);
+        Button btnOptionThree = (Button) findViewById(R.id.button_option_three);
+        Button btnOptionFour = (Button) findViewById(R.id.button_option_four);
+
+        String question = txtQuestion.getText().toString() + ". " + " Option one: " + btnOptionOne.getText().toString() + ". " + " Option two: " + btnOptionTwo.getText().toString() + ". " + " Option three: " + btnOptionThree.getText().toString() + ". " + " Option four: " + btnOptionFour.getText().toString();
+        textToSpeech.setLanguage(Locale.US);
+        textToSpeech.speak(question, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     private class DataReceiver extends ResultReceiver {

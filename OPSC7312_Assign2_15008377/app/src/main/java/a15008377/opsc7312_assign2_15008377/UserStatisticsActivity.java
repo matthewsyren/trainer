@@ -40,11 +40,17 @@ public class UserStatisticsActivity extends UserBaseActivity {
     //Method calculates the user's average Quiz score
     public void calculateAverageScore(ArrayList<Statistic> lstStatistics){
         try{
-            double total = 0;
-            for(Statistic statistic: lstStatistics){
-                total += statistic.getResult();
+            double average = 0;
+
+            if(lstStatistics.size() > 0){
+                double total = 0;
+
+                for(Statistic statistic: lstStatistics){
+                    total += statistic.getResult();
+                }
+                average = total / lstStatistics.size();
             }
-            double average = total / lstStatistics.size();
+
             TextView txtAverage = (TextView) findViewById(R.id.text_statistics);
             txtAverage.setText(getResources().getString(R.string.text_user_average_result, average));
             ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);

@@ -1,12 +1,19 @@
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,6 +33,59 @@ public class QuizFetcherActivity extends UserBaseActivity {
 
             //Fetches Quizzes
             new Quiz().requestQuizzes(null, this, new DataReceiver(new Handler()));
+
+            //Displays the ProgressBar
+            toggleProgressBarVisibility(View.VISIBLE);
+
+            //Sets the TextChangedListener for the text_search_quizzes, which will perform a search when the user types
+            final EditText txtSearchQuizzes = (EditText) findViewById(R.id.text_search_quizzes);
+            txtSearchQuizzes.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    searchQuizzes(txtSearchQuizzes);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
+            //Prevents the keyboard from appearing automatically. Learnt from https://stackoverflow.com/questions/2496901/android-on-screen-keyboard-auto-popping-up
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method fetches all Quizzes that match the search
+    public void searchQuizzes(EditText txtSearchQuizzes){
+        try{
+            //Fetches the search term and requests Quizzes that match the search term
+            String searchTerm = txtSearchQuizzes.getText().toString();
+
+            //Displays ProgressBar
+            toggleProgressBarVisibility(View.VISIBLE);
+
+            //Fetches the Quizzes from the Firebase Database that match the search term
+            new Quiz().requestQuizzes(searchTerm, this, new DataReceiver(new Handler()));
+        }
+        catch(Exception exc){
+            Toast.makeText(getBaseContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method toggles the ProgressBar's visibility
+    public void toggleProgressBarVisibility(int visible){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visible);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -36,7 +96,7 @@ public class QuizFetcherActivity extends UserBaseActivity {
     public void displayQuizzes(final ArrayList<Statistic> lstStatistics){
         try{
             //Sets an empty adapter
-            QuizListViewAdapter quizListViewAdapter = new QuizListViewAdapter(this, new ArrayList<Quiz>());
+            final QuizListViewAdapter quizListViewAdapter = new QuizListViewAdapter(this, new ArrayList<Quiz>());
             boolean found;
 
             //Adds Quizzes that haven't been taken by the user yet to the adapter
@@ -60,7 +120,7 @@ public class QuizFetcherActivity extends UserBaseActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(QuizFetcherActivity.this, QuizActivity.class);
-                    intent.putExtra("quiz", lstQuizzes.get(position));
+                    intent.putExtra("quiz", (Quiz) quizListViewAdapter.getItem(position));
                     startActivity(intent);
                 }
             });
@@ -85,6 +145,9 @@ public class QuizFetcherActivity extends UserBaseActivity {
             else if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
                 ArrayList<Statistic> lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
                 displayQuizzes(lstStatistics);
+
+                //Hides the ProgressBar
+                toggleProgressBarVisibility(View.INVISIBLE);
             }
         }
     }

@@ -9,20 +9,39 @@
     tools:context="a15008377.opsc7312_assign2_15008377.UserStatisticsActivity"
     tools:showIn="@layout/app_bar_user_statistics">
     <TextView
-        android:id="@+id/text_statistics"
+        android:id="@+id/text_current_rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:textSize="30dp"/>
+        android:textSize="@dimen/statistics_activity_text_size"
+        android:layout_above="@id/progress_bar"
+        android:textColor="@color/black"/>
+
 
     <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_below="@id/text_statistics"
+        android:id="@+id/progress_bar_results"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:indeterminate="false"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        style="?android:attr/progressBarStyleHorizontal"/>
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_centerInParent="true"
+        android:progressBackgroundTint="@color/gray"/>
 
+    <TextView
+        android:id="@+id/text_statistics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/statistics_activity_text_size"
+        android:layout_below="@id/progress_bar"
+        android:textColor="@color/black"/>
+
+    <ProgressBar
+        android:layout_width="@dimen/progress_bar_diameter"
+        android:layout_height="@dimen/progress_bar_diameter"
+        android:id="@+id/progress_bar"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

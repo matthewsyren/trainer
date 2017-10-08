@@ -24,13 +24,20 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:id="@+id/button_menu" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/text_search_quizzes"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/title_activity_quiz_manager"
                 android:textSize="@dimen/app_bar_text_size"
+                android:background="@color/white"
                 android:textColor="@color/black"
-                android:layout_marginStart="@dimen/app_bar_margin"/>
+                android:textColorHint="@color/gray"
+                android:layout_marginLeft="@dimen/app_bar_margin"
+                android:layout_marginRight="@dimen/app_bar_margin"
+                android:paddingLeft="@dimen/app_bar_search_padding"
+                android:imeOptions="actionSearch"
+                android:hint="@string/text_search_quiz_hint"
+                android:maxLines="1"/>
             </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.speech.RecognizerIntent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -30,6 +33,12 @@ public class QuizSetterActivity extends AppCompatActivity {
             QuizQuestionListViewAdapter quizQuestionListViewAdapter = new QuizQuestionListViewAdapter(this, new ArrayList<Question>());
             listView.setAdapter(quizQuestionListViewAdapter);
 
+            Spinner spinner = (Spinner) findViewById(R.id.spinner_correct_answer);
+            String[] possibleAnswers = {"Option One", "Option Two", "Option Three", "Option Four"};
+
+            ArrayAdapter adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_row, R.id.text_spinner_item_id, possibleAnswers);
+            spinner.setAdapter(adapter);
+
             //Makes ListView within a ScrollView scrollable (Learnt from https://stackoverflow.com/questions/18367522/android-list-view-inside-a-scroll-view)
             listView.setOnTouchListener(new View.OnTouchListener() {
                 //Sets onTouchListener to allow scrolling in the ListView within a ScrollView
@@ -40,10 +49,35 @@ public class QuizSetterActivity extends AppCompatActivity {
                     return false;
                 }
             });
+
+            //Displays Back button in ActionBar
+            ActionBar actionBar = getSupportActionBar();
+            if(actionBar != null){
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    //Takes the user back to the QuizManagerActivity when the back button is pressed
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        try{
+            int id = item.getItemId();
+
+            //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
+            if (id == android.R.id.home) {
+                Intent intent = new Intent(QuizSetterActivity.this, QuizManagerActivity.class);
+                startActivity(intent);
+            }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     //Method adds a new Question to the ListView
@@ -63,7 +97,7 @@ public class QuizSetterActivity extends AppCompatActivity {
             String optionFour = txtOptionFour.getText().toString();
             int correctAnswerPosition = spnCorrectAnswer.getSelectedItemPosition();
 
-            Question question = new Question(questionText, optionOne, optionTwo, optionThree, optionFour, correctAnswerPosition);
+            Question question = new Question(questionText, optionOne, optionTwo, optionThree, optionFour, correctAnswerPosition + 1);
             if(question.validateQuestion(this)){
                 ListView listView = (ListView) findViewById(R.id.list_view_quiz_questions);
                 QuizQuestionListViewAdapter quizQuestionListViewAdapter = (QuizQuestionListViewAdapter) listView.getAdapter();

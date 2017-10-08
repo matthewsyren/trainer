@@ -115,11 +115,12 @@ public class User {
     }
 
     //Requests Users from the Firebase Database
-    public void requestUsers(Context context, ResultReceiver resultReceiver){
+    public void requestUsers(String searchTerm, Context context, ResultReceiver resultReceiver){
         try{
             //Requests Statistic information from the FirebaseService class
             Intent intent = new Intent(context, FirebaseService.class);
             intent.setAction(FirebaseService.ACTION_FETCH_USER);
+            intent.putExtra(FirebaseService.USER_NAME, searchTerm);
             intent.putExtra(FirebaseService.RECEIVER, resultReceiver);
             context.startService(intent);
         }

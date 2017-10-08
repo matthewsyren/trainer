@@ -6,9 +6,14 @@ import android.media.audiofx.LoudnessEnhancer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -30,7 +35,58 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
         super.setSelectedNavItem(R.id.nav_statistics);
 
         //Fetches the necessary data for this Activity
-        new User().requestUsers(getApplicationContext(), new DataReceiver(new Handler()));
+        new User().requestUsers(null, getApplicationContext(), new DataReceiver(new Handler()));
+        toggleProgressBarVisibility(View.VISIBLE);
+
+        //Sets the TextChangedListener for the text_search_users, which will perform a search when the user types
+        final EditText txtSearchUsers = (EditText) findViewById(R.id.text_search_users);
+        txtSearchUsers.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchUsers(txtSearchUsers);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        //Prevents the keyboard from appearing automatically. Learnt from https://stackoverflow.com/questions/2496901/android-on-screen-keyboard-auto-popping-up
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    //Method fetches all Users that match the search
+    public void searchUsers(EditText txtSearchUsers){
+        try{
+            //Fetches the search term and requests Users that match the search term
+            String searchTerm = txtSearchUsers.getText().toString();
+
+            //Displays ProgressBar
+            toggleProgressBarVisibility(View.VISIBLE);
+
+            //Fetches the Users from the Firebase Database that match the search term
+            new User().requestUsers(searchTerm, this, new DataReceiver(new Handler()));
+        }
+        catch(Exception exc){
+            Toast.makeText(getBaseContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method toggles the ProgressBar's visibility
+    public void toggleProgressBarVisibility(int visible){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visible);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private class DataReceiver extends ResultReceiver {
@@ -60,6 +116,7 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
                         startActivity(intent);
                     }
                 });
+                toggleProgressBarVisibility(View.INVISIBLE);
             }
         }
     }

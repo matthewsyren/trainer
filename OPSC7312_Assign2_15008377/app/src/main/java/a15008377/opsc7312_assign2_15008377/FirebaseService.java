@@ -26,6 +26,7 @@ public class FirebaseService extends IntentService {
     //Declarations
     public static final String RECEIVER = "a15008377.opsc7312assign2_15008377.RECEIVER";
     public static final String QUIZ_ID = "a15008377.opsc7312assign2_15008377.QUIZ_ID";
+    public static final String USER_NAME = "a15008377.opsc7312assign2_15008377.USER_NAME";
     public static final String USER_KEY = "a15008377.opsc7312assign2_15008377.USER_KEY";
 
     //Action Declarations
@@ -76,7 +77,8 @@ public class FirebaseService extends IntentService {
                 startActionWriteStatistic(statistic);
             }
             else if(action.equals(ACTION_FETCH_USER)){
-                startActionFetchUser();
+                String searchTerm = intent.getStringExtra(USER_NAME);
+                startActionFetchUser(searchTerm);
             }
         }
     }
@@ -210,7 +212,7 @@ public class FirebaseService extends IntentService {
     }
 
     //Method fetches the User data from the Firebase Database
-    private void startActionFetchUser(){
+    private void startActionFetchUser(final String searchTerm){
         //Gets reference to Firebase
         final ArrayList<User> lstUsers = new ArrayList<>();
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -225,11 +227,13 @@ public class FirebaseService extends IntentService {
                 for(DataSnapshot snapshot : lstSnapshots){
                     //Retrieves the Quiz from Firebase and adds the Quiz to an ArrayList of Quiz objects
                     String fullName = (String) snapshot.child("userFullName").getValue();
-                    String adminRights = (String) snapshot.child("userAdminRights").getValue();
-                    String emailAddress = (String) snapshot.child("userEmailAddress").getValue();
-                    User user = new User(fullName, emailAddress, "", Boolean.valueOf(adminRights));
-                    user.setUserKey(snapshot.getKey());
-                    lstUsers.add(user);
+                    if(searchTerm == null || fullName.contains(searchTerm)){
+                        String adminRights = (String) snapshot.child("userAdminRights").getValue();
+                        String emailAddress = (String) snapshot.child("userEmailAddress").getValue();
+                        User user = new User(fullName, emailAddress, "", Boolean.valueOf(adminRights));
+                        user.setUserKey(snapshot.getKey());
+                        lstUsers.add(user);
+                    }
                 }
                 //Removes the EventListener
                 databaseReference.removeEventListener(this);

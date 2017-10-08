@@ -6,10 +6,13 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.speech.tts.TextToSpeech;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,10 +40,35 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
             setContentView(R.layout.activity_quiz);
 
             fetchQuiz();
+
+            //Displays Back button in ActionBar
+            ActionBar actionBar = getSupportActionBar();
+            if(actionBar != null){
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    //Takes the user back to the QuizFetcherActivity when the back button is pressed
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        try{
+            int id = item.getItemId();
+
+            //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
+            if (id == android.R.id.home) {
+                Intent intent = new Intent(QuizActivity.this, QuizFetcherActivity.class);
+                startActivity(intent);
+            }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     //Method fetches the Quiz passed in from the previous Activity
@@ -201,6 +229,9 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
             Button btnOptionFour = (Button) findViewById(R.id.button_option_four);
             final Button[] buttons = {btnOptionOne, btnOptionTwo, btnOptionThree, btnOptionFour};
 
+            //Disables touch input from the user. (Learnt from https://stackoverflow.com/questions/4280608/disable-a-whole-activity-from-user-action)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
             //Gets correct answer and turns the correct answer green, and the user's answer red if their answer is incorrect
             final int correctAnswer = quiz.getLstQuestions().get(questionNumber).getAnswerPosition();
             buttons[correctAnswer].setBackgroundResource(R.drawable.button_rounded_correct_answer);
@@ -218,6 +249,9 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
                 @Override
                 public void onFinish() {
+                    //Enables touch input for the screen
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                     //Resets the buttons back to their normal colours and displays the next question
                     buttons[correctAnswer].setBackgroundResource(R.drawable.button_rounded);
                     buttons[optionChosen].setBackgroundResource(R.drawable.button_rounded);

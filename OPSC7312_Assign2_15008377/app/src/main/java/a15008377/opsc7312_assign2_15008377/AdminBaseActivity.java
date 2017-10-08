@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -33,6 +35,7 @@ public class AdminBaseActivity extends FragmentActivity
     protected void onCreateDrawer() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        displayUserDetails();
 
         ImageButton btnMenu = (ImageButton) findViewById(R.id.button_menu);
         btnMenu.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +87,19 @@ public class AdminBaseActivity extends FragmentActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //Method displays the user's details in the NavigationDrawer
+    public void displayUserDetails(){
+        try{
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            View view =  navigationView.getHeaderView(0);
+            TextView textView = (TextView) view.findViewById(R.id.textView);
+            textView.setText(new User(this).getUserEmailAddress());
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Handles clicks on the NavigationDrawer

@@ -3,11 +3,14 @@ package a15008377.opsc7312_assign2_15008377;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,6 +25,45 @@ public class AdminSpecificStatisticsActivity extends AppCompatActivity {
 
         //Fetches the user's Statistics
         fetchUserStatistics();
+
+        //Displays Back button in ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        //Displays the ProgressBar
+        toggleProgressBarVisibility(View.VISIBLE);
+    }
+
+    //Method toggles the ProgressBar's visibility
+    public void toggleProgressBarVisibility(int visible){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visible);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Takes the user back to the AdminStatisticsActivity when the back button is pressed
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        try{
+            int id = item.getItemId();
+
+            //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
+            if (id == android.R.id.home) {
+                Intent intent = new Intent(AdminSpecificStatisticsActivity.this, AdminStatisticsActivity.class);
+                startActivity(intent);
+            }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     //Method fetches the user's Statistics
@@ -76,6 +118,9 @@ public class AdminSpecificStatisticsActivity extends AppCompatActivity {
                 ArrayList<Quiz> lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
 
                 displayPastQuizzes(lstQuizzes, lstStatistics);
+
+                //Hides the ProgressBar
+                toggleProgressBarVisibility(View.INVISIBLE);
             }
         }
     }

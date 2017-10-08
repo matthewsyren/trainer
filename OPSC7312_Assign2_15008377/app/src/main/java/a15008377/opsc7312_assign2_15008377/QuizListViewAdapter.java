@@ -70,7 +70,7 @@ public class QuizListViewAdapter extends ArrayAdapter {
         txtQuizName = (TextView) convertView.findViewById(R.id.text_quiz_name);
         btnDownloadVideo = (ImageButton) convertView.findViewById(R.id.button_download_video);
         btnDownloadVideo.setFocusable(false);
-        progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+        progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar_video_download);
         progressBar.setVisibility(View.INVISIBLE);
 
         boolean fileDownloaded = checkForFile(position);
@@ -101,11 +101,6 @@ public class QuizListViewAdapter extends ArrayAdapter {
                         notifyDataSetChanged();
                     }
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "Metadata download failed", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -163,9 +158,10 @@ public class QuizListViewAdapter extends ArrayAdapter {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(context, "Failed", Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "There is no video uploaded for this quiz yet, please try again later...", Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.INVISIBLE);
                                 btnDownloadVideo.setVisibility(View.VISIBLE);
+                                notificationManager.cancel(notificationID);
                             }
                         });
                     }

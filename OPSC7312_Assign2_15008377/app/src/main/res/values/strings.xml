@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Teaching App</string>
+    <string name="app_name">Trainer</string>
 
     <string name="prompt_full_name">Enter your full name</string>
     <string name="prompt_email">Enter your email address</string>
@@ -34,6 +34,8 @@
     <string name="list_view_text_user_name">Name: %s</string>
     <string name="list_view_text_user_average_result">Average: %.2f%%</string>
     <string name="text_user_average_result">Average: %.2f%%</string>
+    <string name="text_current_rank">Current Rank: %d</string>
+
 
 
     <string name="button_add_quiz">Add Quiz</string>
@@ -46,11 +48,11 @@
     <!-- Admin NavigationDrawer -->
     <string name="nav_home">Home</string>
     <string name="nav_quizzes">Quizzes</string>
+    <string name="nav_past_quizzes">Past Quizzes</string>
     <string name="nav_help">Help</string>
     <string name="nav_statistics">Statistics</string>
     <string name="nav_videos">Videos</string>
     <string name="nav_sign_out">Sign Out</string>
-
 
     <string name="title_activity_admin_home">Admin Home</string>
     <string name="title_activity_quiz_fetcher">New Quizzes</string>
@@ -60,5 +62,5 @@
     <string name="title_activity_user_statistics">UserStatisticsActivity</string>
     <string name="title_activity_admin_statistics">AdminStatisticsActivity</string>
     <string name="title_activity_quiz_viewer">QuizViewerActivity</string>
-
+    <string name="text_search_quiz_hint">Type to search...</string>
 </resources>

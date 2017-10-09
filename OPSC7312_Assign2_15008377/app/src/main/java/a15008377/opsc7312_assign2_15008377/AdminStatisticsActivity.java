@@ -103,19 +103,25 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
             }
             else if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
                 lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
-                AdminStatisticListViewAdapter adminStatisticListViewAdapter = new AdminStatisticListViewAdapter(context, lstUsers, lstStatistics);
-                ListView listView = (ListView) findViewById(R.id.list_view_admin_statistics);
-                listView.setAdapter(adminStatisticListViewAdapter);
 
-                //Sets an OnItemClickListener for the ListView, which will allow the Admin to see all the Quiz results for the User that they click on
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(AdminStatisticsActivity.this, AdminSpecificStatisticsActivity.class);
-                        intent.putExtra("userKey", lstUsers.get(position).getUserKey());
-                        startActivity(intent);
-                    }
-                });
+                if(lstStatistics.size() == 0){
+                    Toast.makeText(getApplicationContext(), "There are no results for any quizzes in the database", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    AdminStatisticListViewAdapter adminStatisticListViewAdapter = new AdminStatisticListViewAdapter(context, lstUsers, lstStatistics);
+                    ListView listView = (ListView) findViewById(R.id.list_view_admin_statistics);
+                    listView.setAdapter(adminStatisticListViewAdapter);
+
+                    //Sets an OnItemClickListener for the ListView, which will allow the Admin to see all the Quiz results for the User that they click on
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(AdminStatisticsActivity.this, AdminSpecificStatisticsActivity.class);
+                            intent.putExtra("userKey", lstUsers.get(position).getUserKey());
+                            startActivity(intent);
+                        }
+                    });
+                }
                 toggleProgressBarVisibility(View.INVISIBLE);
             }
         }

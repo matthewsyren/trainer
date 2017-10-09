@@ -11,6 +11,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -186,9 +187,8 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
         btnRecordVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, VideoMakerActivity.class);
-                intent.putExtra("quizKey", lstQuizzes.get(position).getKey());
-                context.startActivity(intent);
+                QuizManagerActivity quizManagerActivity = (QuizManagerActivity) context;
+                quizManagerActivity.recordVideo(lstQuizzes.get(position).getKey());
             }
         });
 
@@ -205,7 +205,6 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
                 DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int button) {
-                        Intent intent;
                         switch(button){
                             case AlertDialog.BUTTON_POSITIVE:
                                 quizToDelete = position;

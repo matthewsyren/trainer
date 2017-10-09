@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -55,7 +56,11 @@ public class QuizSetterActivity extends AppCompatActivity {
             ActionBar actionBar = getSupportActionBar();
             if(actionBar != null){
                 actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle("Quiz Creator");
             }
+
+            //Prevents the keyboard from appearing automatically. Learnt from https://stackoverflow.com/questions/2496901/android-on-screen-keyboard-auto-popping-up
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -109,13 +114,20 @@ public class QuizSetterActivity extends AppCompatActivity {
             String optionFour = txtOptionFour.getText().toString();
             int correctAnswerPosition = spnCorrectAnswer.getSelectedItemPosition();
 
-            Question question = new Question(questionText, optionOne, optionTwo, optionThree, optionFour, correctAnswerPosition + 1);
+            Question question = new Question(questionText, optionOne, optionTwo, optionThree, optionFour, correctAnswerPosition);
             if(question.validateQuestion(this)){
                 ListView listView = (ListView) findViewById(R.id.list_view_quiz_questions);
                 QuizQuestionListViewAdapter quizQuestionListViewAdapter = (QuizQuestionListViewAdapter) listView.getAdapter();
                 quizQuestionListViewAdapter.add(question);
                 quizQuestionListViewAdapter.notifyDataSetChanged();
                 Toast.makeText(getApplicationContext(), "Question Added", Toast.LENGTH_LONG).show();
+
+                //Clears TextViews
+                txtQuestion.setText("");
+                txtOptionOne.setText("");
+                txtOptionTwo.setText("");
+                txtOptionThree.setText("");
+                txtOptionFour.setText("");
             }
         }
         catch(Exception exc){
@@ -138,10 +150,12 @@ public class QuizSetterActivity extends AppCompatActivity {
             }
 
             Quiz quiz = new Quiz(quizName, lstQuestions);
-            quiz.requestWriteOfQuiz(this, "add", new DataReceiver(new Handler()));
+            if(quiz.validateQuiz(this)){
+                quiz.requestWriteOfQuiz(this, null, new DataReceiver(new Handler()));
 
-            //Displays ProgressBar
-            toggleProgressBarVisibility(View.VISIBLE);
+                //Displays ProgressBar
+                toggleProgressBarVisibility(View.VISIBLE);
+            }
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

@@ -44,6 +44,7 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
             //Displays Back button in ActionBar
             ActionBar actionBar = getSupportActionBar();
             if(actionBar != null){
+                actionBar.setTitle(quiz.getName());
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
         }

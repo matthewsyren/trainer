@@ -147,6 +147,7 @@ public class UserStatisticsActivity extends UserBaseActivity {
             if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
                 ArrayList<Statistic> lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
                 calculateAverageScore(lstStatistics);
+                Toast.makeText(getApplicationContext(), "You haven't completed any quizzes, yet", Toast.LENGTH_LONG).show();
 
                 //Hides the ProgressBar
                 toggleProgressBarVisibility(View.INVISIBLE);

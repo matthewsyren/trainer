@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -139,7 +141,13 @@ public class FirebaseService extends IntentService {
                     databaseReference.child(quizKey).setValue(quiz);
                 }
                 else{
+                    //Deletes the Quiz
                     databaseReference.child(quiz.getKey()).setValue(null);
+
+                    //Deletes the video associated with the Quiz
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                    final StorageReference store = storageReference.child(quiz.getKey() + ".mp4");
+                    store.delete();
                 }
 
                 //Removes the EventListener

@@ -1,6 +1,7 @@
 package a15008377.opsc7312_assign2_15008377;
 
 import android.net.Uri;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.MediaController;
@@ -18,6 +19,12 @@ public class VideoViewerActivity extends AppCompatActivity {
             setContentView(R.layout.activity_video_viewer);
 
             playVideo();
+
+            //Hides the ActionBar
+            ActionBar actionBar = getSupportActionBar();
+            if(actionBar != null){
+                actionBar.hide();
+            }
         }
         catch(Exception exc) {
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

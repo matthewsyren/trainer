@@ -28,7 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PastQuizActivity extends UserHomeActivity {
+public class PastQuizActivity extends UserBaseActivity {
     ArrayList<Statistic> lstStatistics;
 
     @Override
@@ -146,13 +146,22 @@ public class PastQuizActivity extends UserHomeActivity {
             //Processes the result when the Statistic has been fetched from the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
                 lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
-                new Quiz().requestQuizzes(null, getApplicationContext(), new DataReceiver(new Handler()));
+
+                if(lstStatistics.size() == 0){
+                    Toast.makeText(getApplicationContext(), "You have not completed any quizzes yet", Toast.LENGTH_LONG).show();
+
+                    //Hides the ProgressBar
+                    toggleProgressBarVisibility(View.INVISIBLE);
+                }
+                else{
+                    new Quiz().requestQuizzes(null, getApplicationContext(), new DataReceiver(new Handler()));
+                }
             }
             else if(resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE){
                 ArrayList<Quiz> lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
 
                 displayPastQuizzes(lstQuizzes, lstStatistics);
-
+                
                 //Hides the ProgressBar
                 toggleProgressBarVisibility(View.INVISIBLE);
             }

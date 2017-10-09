@@ -140,11 +140,18 @@ public class QuizFetcherActivity extends UserBaseActivity {
             //Processes the result when the Stock has been written to the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE) {
                 lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
-                new Statistic().requestStatistics(new User(getApplicationContext()).getUserKey(), getApplicationContext(), new DataReceiver(new Handler()));
+
+                if(lstQuizzes.size() == 0){
+                    Toast.makeText(getApplicationContext(), "No quizzes have been added to the database, yet", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    new Statistic().requestStatistics(new User(getApplicationContext()).getUserKey(), getApplicationContext(), new DataReceiver(new Handler()));
+                }
             }
             else if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
                 ArrayList<Statistic> lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
                 displayQuizzes(lstStatistics);
+
 
                 //Hides the ProgressBar
                 toggleProgressBarVisibility(View.INVISIBLE);

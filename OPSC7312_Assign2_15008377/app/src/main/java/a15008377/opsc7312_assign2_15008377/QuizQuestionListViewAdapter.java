@@ -65,7 +65,7 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
         txtOptionTwo.setText(resources.getString(R.string.list_view_text_option_two, lstQuestions.get(position).getOptionTwo()));
         txtOptionThree.setText(resources.getString(R.string.list_view_text_option_three, lstQuestions.get(position).getOptionThree()));
         txtOptionFour.setText(resources.getString(R.string.list_view_text_option_four, lstQuestions.get(position).getOptionFour()));
-        txtCorrectOption.setText(resources.getString(R.string.list_view_text_correct_option, lstQuestions.get(position).getAnswerPosition()));
+        txtCorrectOption.setText(resources.getString(R.string.list_view_text_correct_option, lstQuestions.get(position).getAnswerPosition() + 1));
 
         //Adds OnClickListener to delete button
         btnDelete.setOnClickListener(new View.OnClickListener() {

@@ -1,9 +1,15 @@
 package a15008377.opsc7312_assign2_15008377;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
@@ -23,10 +29,24 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.VideoView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
 public class QuizManagerActivity extends AdminBaseActivity {
+    //Declarations
+    NotificationManager notificationManager;
+    Notification.Builder notificationBuilder;
+    int notificationID = 1;
+    Notification notification;
+    String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +149,87 @@ public class QuizManagerActivity extends AdminBaseActivity {
         }
     }
 
+    public void recordVideo(String quizKey){
+        try{
+            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationBuilder = new Notification.Builder(this);
+            Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+                key = quizKey;
+                startActivityForResult(takeVideoIntent, 1);
+            }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method displays the video in the VideoView
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        try{
+            if (requestCode == 1 && resultCode == RESULT_OK) {
+                Uri videoUri = intent.getData();
+                uploadVideo(videoUri);
+            }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @SuppressWarnings("VisibleForTests")
+    //Method uploads the video that the user has taken to Firebase Storage
+    private void uploadVideo(Uri file){
+        try{
+            Toast.makeText(getApplicationContext(), "Starting upload, please don't close the app until the video has finished uploading...", Toast.LENGTH_LONG).show();
+            //Displays notification for upload progress
+            notificationBuilder.setOngoing(true)
+                    .setContentTitle("Trainer")
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentText("Uploading...")
+                    .setProgress(100, 0, false);
+            notification = notificationBuilder.build();
+            notificationManager.notify(notificationID, notification);
+
+            //Gets reference to Firebase Storage and Database
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+
+            //Stores the video with a file name of the Quiz key
+            StorageReference store = storageReference.child(key + ".mp4");
+            store.putFile(file).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getApplicationContext(), "Video uploaded successfully", Toast.LENGTH_LONG).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), "Upload failed, please try again. " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                    notificationBuilder.setProgress(100, progress, false);
+                    notificationBuilder.setContentText("Uploading: " + progress + "%");
+
+                    //Displays the upload progress
+                    if(progress == 100){
+                        notificationManager.cancel(notificationID);
+                    }
+                    else{
+                        notification = notificationBuilder.build();
+                        notificationManager.notify(notificationID, notification);
+                    }
+                }
+            });
+        }
+        catch(Exception exc) {
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     private class DataReceiver extends ResultReceiver {
         private DataReceiver(Handler handler) {
             super(handler);
@@ -139,7 +240,12 @@ public class QuizManagerActivity extends AdminBaseActivity {
             //Processes the result when the Stock has been written to the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE) {
                 ArrayList<Quiz> lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
-                displayQuizzes(lstQuizzes);
+                if(lstQuizzes.size() == 0){
+                    Toast.makeText(getApplicationContext(), "There are currently no quizzes in the database", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    displayQuizzes(lstQuizzes);
+                }
                 toggleProgressBarVisibility(View.INVISIBLE);
             }
         }

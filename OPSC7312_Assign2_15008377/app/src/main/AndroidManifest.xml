@@ -24,16 +24,8 @@
             android:exported="false" />
 
         <activity
-            android:name=".AdminHomeActivity"
-            android:label="@string/title_activity_admin_home"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".QuizFetcherActivity"
             android:label="@string/title_activity_quiz_fetcher"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".UserHomeActivity"
-            android:label="@string/title_activity_user_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".QuizManagerActivity"

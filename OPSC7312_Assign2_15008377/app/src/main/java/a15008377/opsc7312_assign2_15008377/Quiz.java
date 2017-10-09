@@ -46,6 +46,22 @@ public class Quiz implements Serializable{
         this.key = key;
     }
 
+    //Ensures that all Quiz data is valid (returns true if data is valid)
+    public boolean validateQuiz(Context context){
+        boolean valid = false;
+        if(name.isEmpty()){
+            Toast.makeText(context, "Please enter a name for the quiz", Toast.LENGTH_LONG).show();
+        }
+        else if(lstQuestions.isEmpty()){
+            Toast.makeText(context, "Please add at least one question to the quiz", Toast.LENGTH_LONG).show();
+        }
+        else{
+            valid = true;
+        }
+
+        return valid;
+    }
+
     //Requests Quiz Items from the Firebase Database
     public void requestQuizzes(String searchTerm, Context context, ResultReceiver resultReceiver){
         try{

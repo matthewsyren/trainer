@@ -29,6 +29,7 @@ public class AdminSpecificStatisticsActivity extends AppCompatActivity {
         //Displays Back button in ActionBar
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
+            actionBar.setTitle("User Statistics");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -112,12 +113,21 @@ public class AdminSpecificStatisticsActivity extends AppCompatActivity {
             //Processes the result when the Statistic has been fetched from the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
                 lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
-                new Quiz().requestQuizzes(null, getApplicationContext(), new DataReceiver(new Handler()));
+
+                if(lstStatistics.size() == 0){
+                    Toast.makeText(getApplicationContext(), "This user hasn't completed any quizzes yet", Toast.LENGTH_LONG).show();
+
+                    //Hides the ProgressBar
+                    toggleProgressBarVisibility(View.INVISIBLE);
+                }
+                else{
+                    new Quiz().requestQuizzes(null, getApplicationContext(), new DataReceiver(new Handler()));
+                }
             }
             else if(resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE){
                 ArrayList<Quiz> lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
-
                 displayPastQuizzes(lstQuizzes, lstStatistics);
+
 
                 //Hides the ProgressBar
                 toggleProgressBarVisibility(View.INVISIBLE);

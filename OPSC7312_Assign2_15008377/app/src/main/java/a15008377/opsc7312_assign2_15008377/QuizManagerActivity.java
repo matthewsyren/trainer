@@ -113,6 +113,8 @@ public class QuizManagerActivity extends AdminBaseActivity {
             QuizManagementListViewAdapter quizListViewAdapter = new QuizManagementListViewAdapter(this, lstQuizzes);
             ListView listView = (ListView) findViewById(R.id.list_view_quizzes);
             listView.setAdapter(quizListViewAdapter);
+
+            //Sets OnItemClickListener to open the Quiz that the user clicked on
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

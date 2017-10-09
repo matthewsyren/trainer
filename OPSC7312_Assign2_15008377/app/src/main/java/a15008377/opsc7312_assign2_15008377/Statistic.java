@@ -74,4 +74,19 @@ public class Statistic implements Serializable{
             Toast.makeText(context, exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
+    //Method requests that all Statistics for a specific Quiz are deleted
+    public void requestDeleteOfStatistic(String quizID, Context context, ResultReceiver resultReceiver){
+        try{
+            //Requests location information from the LocationService class
+            Intent intent = new Intent(context, FirebaseService.class);
+            intent.setAction(FirebaseService.ACTION_DELETE_STATISTIC);
+            intent.putExtra(FirebaseService.QUIZ_ID, quizID);
+            intent.putExtra(FirebaseService.RECEIVER, resultReceiver);
+            context.startService(intent);
+        }
+        catch(Exception exc){
+            Toast.makeText(context, exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
 }

@@ -17,7 +17,8 @@
         app:cardCornerRadius="@dimen/card_view_corner_margin">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants">
             <TextView
                 android:id="@+id/text_quiz_name"
                 android:layout_width="match_parent"
@@ -25,7 +26,7 @@
                 android:textColor="@color/black"
                 android:layout_margin="@dimen/activity_vertical_margin"
                 android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@+id/button_record_video"/>
+                android:layout_toLeftOf="@+id/button_delete_quiz"/>
 
             <ImageButton
                 android:id="@+id/button_record_video"
@@ -47,8 +48,20 @@
                 android:layout_height="wrap_content"
                 android:onClick="recordVideoOnClick"
                 android:src="@drawable/ic_videocam_black_24dp"
-                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:padding="@dimen/button_padding"
+                android:layout_alignParentEnd="true"
+                android:tint="@color/colorPrimary" />
+
+            <ImageButton
+                android:id="@+id/button_delete_quiz"
+                android:background="@drawable/button_rounded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete_black_24dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/button_record_video"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:padding="@dimen/button_padding"
                 android:tint="@color/colorPrimary"/>
 
@@ -57,9 +70,9 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:indeterminate="true"
-                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/button_margin"/>
+                android:layout_marginRight="@dimen/button_margin"
+                android:layout_alignParentEnd="true"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

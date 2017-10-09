@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,17 @@ public class QuizSetterActivity extends AppCompatActivity {
             if(actionBar != null){
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method toggles the ProgressBar's visibility
+    public void toggleProgressBarVisibility(int visible){
+        try{
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            progressBar.setVisibility(visible);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -124,8 +136,12 @@ public class QuizSetterActivity extends AppCompatActivity {
                 Question question = (Question) quizQuestionListViewAdapter.getItem(i);
                 lstQuestions.add(question);
             }
+
             Quiz quiz = new Quiz(quizName, lstQuestions);
             quiz.requestWriteOfQuiz(this, "add", new DataReceiver(new Handler()));
+
+            //Displays ProgressBar
+            toggleProgressBarVisibility(View.VISIBLE);
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
@@ -176,6 +192,14 @@ public class QuizSetterActivity extends AppCompatActivity {
             //Processes the result when the Quiz has been written to the Firebase Database
             if (resultCode == FirebaseService.ACTION_WRITE_QUIZ_RESULT_CODE) {
                 Toast.makeText(getApplicationContext(), "Quiz uploaded successfully", Toast.LENGTH_LONG).show();
+
+                //Hides ProgressBar
+                toggleProgressBarVisibility(View.INVISIBLE);
+
+                //Refreshes the QuizActivity
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
             }
         }
     }

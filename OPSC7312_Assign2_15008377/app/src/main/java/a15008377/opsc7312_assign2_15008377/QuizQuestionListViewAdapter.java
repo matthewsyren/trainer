@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -72,6 +73,7 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
             public void onClick(View v) {
                 lstQuestions.remove(position);
                 notifyDataSetChanged();
+                Toast.makeText(context, "Question removed", Toast.LENGTH_LONG).show();
             }
         });
 

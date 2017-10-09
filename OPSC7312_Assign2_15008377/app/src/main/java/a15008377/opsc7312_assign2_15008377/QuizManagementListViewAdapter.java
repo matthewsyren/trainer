@@ -4,9 +4,15 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.Image;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +45,7 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
     Notification.Builder notificationBuilder;
     int notificationID = 1;
     Notification notification;
+    int quizToDelete;
 
     //Constructor
 
@@ -59,6 +66,7 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
         ImageButton btnRecordVideo;
         final ImageButton btnDownloadVideo;
         final ProgressBar progressBar;
+        final ImageButton btnDeleteQuiz;
 
         //Inflates the list_row view for the ListView
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
@@ -68,7 +76,7 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
         txtQuizName = (TextView) convertView.findViewById(R.id.text_quiz_name);
         btnRecordVideo = (ImageButton) convertView.findViewById(R.id.button_record_video);
         btnDownloadVideo = (ImageButton) convertView.findViewById(R.id.button_download_video);
-        btnDownloadVideo.setFocusable(false);
+        btnDeleteQuiz = (ImageButton) convertView.findViewById(R.id.button_delete_quiz);
         progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar_video_download);
         progressBar.setVisibility(View.INVISIBLE);
 
@@ -183,6 +191,40 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
                 context.startActivity(intent);
             }
         });
+
+        //Deletes the Quiz and the results for that Quiz for each user
+        btnDeleteQuiz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Displays popup that asks the user if they're sure they'd like to delete the Quiz
+                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                alertDialog.setTitle("Delete Quiz?");
+                alertDialog.setMessage("Are you sure you would like to delete this Quiz? All user results associated with this Quiz will also be deleted.");
+
+                //Creates OnClickListener for the Dialog message
+                DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int button) {
+                        Intent intent;
+                        switch(button){
+                            case AlertDialog.BUTTON_POSITIVE:
+                                quizToDelete = position;
+                                new Statistic().requestDeleteOfStatistic(lstQuizzes.get(position).getKey(), context, new DataReceiver(new Handler()));
+                                break;
+                            case AlertDialog.BUTTON_NEGATIVE:
+                                Toast.makeText(context, "Deletion cancelled", Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                    }
+                };
+
+                //Assigns buttons and OnClickListener for the AlertDialog and displays the AlertDialog
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", dialogOnClickListener);
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", dialogOnClickListener);
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.show();
+            }
+        });
         return convertView;
     }
 
@@ -200,5 +242,25 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
         }
 
         return fileDownloaded;
+    }
+
+    //Creates a ResultReceiver to retrieve information from the FirebaseService
+    private class DataReceiver extends ResultReceiver {
+        private DataReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData){
+            //Processes the result when the Statistics have been deleted from the Firebase Database
+            if(resultCode == FirebaseService.ACTION_DELETE_STATISTIC_RESULT_CODE){
+                lstQuizzes.get(quizToDelete).requestWriteOfQuiz(context, "delete", new DataReceiver(new Handler()));
+            }
+            else if(resultCode == FirebaseService.ACTION_WRITE_QUIZ_RESULT_CODE){
+                lstQuizzes.remove(quizToDelete);
+                notifyDataSetChanged();
+                Toast.makeText(context, "Quiz successfully deleted", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

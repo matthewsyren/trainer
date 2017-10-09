@@ -64,6 +64,7 @@ public class UserStatisticsActivity extends UserBaseActivity {
             ArrayList lstUserAverages = new ArrayList<>();
             String currentUsername = new User(this).getUserKey();
 
+            //Calculates the average score for each user
             if(lstStatistics.size() > 0){
                 double userTotal = 0;
 
@@ -71,11 +72,13 @@ public class UserStatisticsActivity extends UserBaseActivity {
                 String currentUser = lstStatistics.get(0).getUserKey();
 
                 for(Statistic statistic: lstStatistics){
+                    //Calculates the average score for the user that is signed in
                     if(statistic.getUserKey().equals(currentUsername)){
                         currentUserTotal += statistic.getResult();
                         currentUserCount++;
                     }
 
+                    //Calculates the average score for all users
                     if(statistic.getUserKey().equals(currentUser)){
                         userTotal += statistic.getResult();
                         userCount++;

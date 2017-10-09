@@ -35,6 +35,7 @@ public class FirebaseService extends IntentService {
     public static final String ACTION_WRITE_QUIZ_INFORMATION = "a15008377.opsc7312assign2_15008377.action.WRITE_QUIZ_INFORMATION";
     public static final String ACTION_FETCH_STATISTIC =  "a15008377.opsc7312assign2_15008377.action.FETCH_STATISTIC";
     public static final String ACTION_WRITE_STATISTIC =  "a15008377.opsc7312assign2_15008377.action.WRITE_STATISTIC";
+    public static final String ACTION_DELETE_STATISTIC =  "a15008377.opsc7312assign2_15008377.action.DELETE_STATISTIC";
     public static final String ACTION_FETCH_USER =  "a15008377.opsc7312assign2_15008377.action.FETCH_USER";
 
     //Result Codes and ResultReceiver
@@ -42,7 +43,8 @@ public class FirebaseService extends IntentService {
     public static final int ACTION_WRITE_QUIZ_RESULT_CODE = 2;
     public static final int ACTION_FETCH_STATISTIC_RESULT_CODE = 3;
     public static final int ACTION_WRITE_STATISTIC_RESULT_CODE = 4;
-    public static final int ACTION_FETCH_USER_RESULT_CODE = 5;
+    public static final int ACTION_DELETE_STATISTIC_RESULT_CODE = 5;
+    public static final int ACTION_FETCH_USER_RESULT_CODE = 6;
     private ResultReceiver resultReceiver;
 
     //Constructor
@@ -75,6 +77,10 @@ public class FirebaseService extends IntentService {
             else if(action.equals(ACTION_WRITE_STATISTIC)){
                 Statistic statistic = (Statistic) intent.getSerializableExtra(ACTION_WRITE_STATISTIC);
                 startActionWriteStatistic(statistic);
+            }
+            else if(action.equals(ACTION_DELETE_STATISTIC)){
+                String quizID = intent.getStringExtra(QUIZ_ID);
+                startActionDeleteStatistic(quizID);
             }
             else if(action.equals(ACTION_FETCH_USER)){
                 String searchTerm = intent.getStringExtra(USER_NAME);
@@ -128,8 +134,13 @@ public class FirebaseService extends IntentService {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String quizKey = databaseReference.push().getKey();
-                databaseReference.child(quizKey).setValue(quiz);
+                if(writeInformation == null){
+                    String quizKey = databaseReference.push().getKey();
+                    databaseReference.child(quizKey).setValue(quiz);
+                }
+                else{
+                    databaseReference.child(quiz.getKey()).setValue(null);
+                }
 
                 //Removes the EventListener
                 databaseReference.removeEventListener(this);
@@ -174,6 +185,41 @@ public class FirebaseService extends IntentService {
 
                 //Returns result
                 returnFetchStatisticResult(lstStatistics);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.i("Data", "An error occurred while reading the data from Firebase");
+            }
+        });
+    }
+
+    //Method fetches the Statistic data from the Firebase Database
+    private void startActionDeleteStatistic(final String quizKey){
+        //Gets reference to Firebase
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = firebaseDatabase.getReference().child("Results");
+
+        //Adds Listeners for when the data is changed
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Loops through all Quizzes and adds them to the lstQuiz ArrayList
+                Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
+                for(DataSnapshot snapshot : lstSnapshots){
+                    for(DataSnapshot statisticSnapshot : snapshot.getChildren()){
+                        //Deletes Quiz if it matches the key of the Quiz that has been deleted
+                        if(statisticSnapshot.getKey().equals(quizKey)){
+                            databaseReference.child(snapshot.getKey()).child(statisticSnapshot.getKey()).setValue(null);
+                        }
+                    }
+                }
+
+                //Removes the EventListener
+                databaseReference.removeEventListener(this);
+
+                //Returns result
+                returnDeleteStatisticResult(true);
             }
 
             @Override
@@ -275,6 +321,13 @@ public class FirebaseService extends IntentService {
         Bundle bundle = new Bundle();
         bundle.putSerializable(ACTION_WRITE_STATISTIC, success);
         resultReceiver.send(ACTION_WRITE_STATISTIC_RESULT_CODE, bundle);
+    }
+
+    //Returns the result of writing Statistic data
+    private void returnDeleteStatisticResult(boolean success){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ACTION_DELETE_STATISTIC, success);
+        resultReceiver.send(ACTION_DELETE_STATISTIC_RESULT_CODE, bundle);
     }
 
     //Returns the result of fetching User data

@@ -1,8 +1,15 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class fetches the Quizzes the user hasn't taken yet and displays them to the user. To take a Quiz, the user must
+ *              click on the Quiz in the ListView.
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -64,6 +71,11 @@ public class QuizFetcherActivity extends UserBaseActivity {
         }
     }
 
+    //Method prevents the user from going back to the previous Activity by clicking the back button
+    @Override
+    public void onBackPressed() {
+    }
+
     //Method fetches all Quizzes that match the search
     public void searchQuizzes(EditText txtSearchQuizzes){
         try{
@@ -116,6 +128,12 @@ public class QuizFetcherActivity extends UserBaseActivity {
             //Sets the adapter for the ListView
             ListView listView = (ListView) findViewById(R.id.list_view_quizzes);
             listView.setAdapter(quizListViewAdapter);
+
+            if(listView.getAdapter().getCount() == 0){
+                Toast.makeText(getApplicationContext(), "You have completed all available Quizzes", Toast.LENGTH_LONG).show();
+            }
+
+            //Sets an OnItemClickListener to allow the user to take the Quiz if they click on it
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -130,6 +148,7 @@ public class QuizFetcherActivity extends UserBaseActivity {
         }
     }
 
+    //Processes the data received from FirebaseService
     private class DataReceiver extends ResultReceiver {
         private DataReceiver(Handler handler) {
             super(handler);
@@ -137,7 +156,7 @@ public class QuizFetcherActivity extends UserBaseActivity {
 
         @Override
         protected void onReceiveResult ( int resultCode, Bundle resultData){
-            //Processes the result when the Stock has been written to the Firebase Database
+            //Processes the result when the Quiz has been fetched from the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE) {
                 lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
 
@@ -145,13 +164,15 @@ public class QuizFetcherActivity extends UserBaseActivity {
                     Toast.makeText(getApplicationContext(), "No quizzes have been added to the database, yet", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    //Requests Statistics
                     new Statistic().requestStatistics(new User(getApplicationContext()).getUserKey(), getApplicationContext(), new DataReceiver(new Handler()));
                 }
             }
             else if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
                 ArrayList<Statistic> lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
-                displayQuizzes(lstStatistics);
 
+                //Displays the Quizzes the user hasn't taken already
+                displayQuizzes(lstStatistics);
 
                 //Hides the ProgressBar
                 toggleProgressBarVisibility(View.INVISIBLE);

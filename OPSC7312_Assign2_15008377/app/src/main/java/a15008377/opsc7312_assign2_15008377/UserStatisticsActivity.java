@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class displays information to the user about their results and ranking compared to other users
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.graphics.Color;
@@ -5,42 +13,35 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class UserStatisticsActivity extends UserBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_statistics);
+        try{
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_user_statistics);
 
-        //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Statistics
-        super.onCreateDrawer();
-        super.setSelectedNavItem(R.id.nav_statistics);
+            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Statistics
+            super.onCreateDrawer();
+            super.setSelectedNavItem(R.id.nav_statistics);
 
-        //Fetches the User's Statistics
-        new Statistic().requestStatistics(null, this, new DataReceiver(new Handler()));
+            //Fetches the User's Statistics
+            new Statistic().requestStatistics(null, this, new DataReceiver(new Handler()));
 
-        //Displays the ProgressBar
-        toggleProgressBarVisibility(View.VISIBLE);
+            //Displays the ProgressBar
+            toggleProgressBarVisibility(View.VISIBLE);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Method toggles the ProgressBar's visibility
@@ -57,6 +58,7 @@ public class UserStatisticsActivity extends UserBaseActivity {
     //Method calculates the user's average Quiz score
     public void calculateAverageScore(ArrayList<Statistic> lstStatistics){
         try{
+            //Initialises variables
             double userAverage = 0;
             double currentUserTotal = 0;
             double currentUserCount = 0;
@@ -67,9 +69,8 @@ public class UserStatisticsActivity extends UserBaseActivity {
             //Calculates the average score for each user
             if(lstStatistics.size() > 0){
                 double userTotal = 0;
-
                 double userCount = 0;
-                String currentUser = lstStatistics.get(0).getUserKey();
+                String user = lstStatistics.get(0).getUserKey();
 
                 for(Statistic statistic: lstStatistics){
                     //Calculates the average score for the user that is signed in
@@ -79,22 +80,27 @@ public class UserStatisticsActivity extends UserBaseActivity {
                     }
 
                     //Calculates the average score for all users
-                    if(statistic.getUserKey().equals(currentUser)){
+                    if(statistic.getUserKey().equals(user)){
                         userTotal += statistic.getResult();
                         userCount++;
                     }
                     else{
                         userAverage = userTotal / userCount;
                         lstUserAverages.add(userAverage);
-                        currentUser = statistic.getUserKey();
+
+                        //Fetches the next user
+                        user = statistic.getUserKey();
                         userTotal = statistic.getResult();
                         userCount = 1;
                     }
                 }
+
+                //Processes the final user
                 userAverage = userTotal / userCount;
                 lstUserAverages.add(userAverage);
             }
 
+            //Calculates current user's average
             if(currentUserCount > 0){
                 currentUserAverage = currentUserTotal / currentUserCount;
             }
@@ -136,6 +142,7 @@ public class UserStatisticsActivity extends UserBaseActivity {
         }
     }
 
+    //Processes the data received from FirebaseService
     private class DataReceiver extends ResultReceiver {
         private DataReceiver(Handler handler) {
             super(handler);
@@ -146,8 +153,13 @@ public class UserStatisticsActivity extends UserBaseActivity {
             //Processes the result when the Statistic has been fetched from the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_STATISTIC_RESULT_CODE) {
                 ArrayList<Statistic> lstStatistics = (ArrayList<Statistic>) resultData.getSerializable(FirebaseService.ACTION_FETCH_STATISTIC);
-                calculateAverageScore(lstStatistics);
-                Toast.makeText(getApplicationContext(), "You haven't completed any quizzes, yet", Toast.LENGTH_LONG).show();
+
+                if(lstStatistics.size() > 0){
+                    calculateAverageScore(lstStatistics);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "You haven't completed any quizzes, yet", Toast.LENGTH_LONG).show();
+                }
 
                 //Hides the ProgressBar
                 toggleProgressBarVisibility(View.INVISIBLE);

@@ -7,8 +7,17 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="a15008377.opsc7312_assign2_15008377.AdminStatisticsActivity"
     tools:showIn="@layout/app_bar_admin_statistics">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_admin_statistics"
+        android:text="@string/text_admin_statistics"
+        style="@style/HeadingTextStyle"/>
+
     <ListView
         android:id="@+id/list_view_admin_statistics"
+        android:layout_below="@+id/text_admin_statistics"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

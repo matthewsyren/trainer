@@ -1,7 +1,18 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class allows the user to take a Quiz. The user clicks on the answer they think is right, and the program will
+ *              tell them whether they are right or not If the user would like the question to be read out loud, they must click
+ *              on the question.
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -9,7 +20,6 @@ import android.speech.tts.TextToSpeech;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,13 +27,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
@@ -39,6 +42,7 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_quiz);
 
+            //Fetches the Quiz that the user has chosen to take
             fetchQuiz();
 
             //Displays Back button in ActionBar
@@ -59,7 +63,7 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
         try{
             int id = item.getItemId();
 
-            //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
+            //Takes the user back to the QuizFetcherActivity if the button that was pressed was the back button
             if (id == android.R.id.home) {
                 Intent intent = new Intent(QuizActivity.this, QuizFetcherActivity.class);
                 startActivity(intent);
@@ -105,6 +109,7 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 Button btnOptionThree = (Button) findViewById(R.id.button_option_three);
                 Button btnOptionFour = (Button) findViewById(R.id.button_option_four);
 
+                //Displays Question and its options
                 Question question = quiz.getLstQuestions().get(questionNumber);
                 txtQuestion.setText(question.getQuestion());
                 btnOptionOne.setText(question.getOptionOne());
@@ -113,6 +118,7 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 btnOptionFour.setText(question.getOptionFour());
             }
             else{
+                //Saves the user's result to the Firebase Database
                 saveScore();
             }
         }
@@ -124,6 +130,7 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
     //Method saves the user's score to the Firebase Database
     public void saveScore(){
         try{
+            //Saves the user's result to Firebase Database
             double percentage = ((double) correctAnswers / quiz.getLstQuestions().size()) * 100;
             double result = Math.round(percentage);
             Statistic statistic = new Statistic(quiz.getKey(), result);
@@ -167,10 +174,13 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
     //Method accepts the user's answer as option one
     public void optionOneOnClick(View view){
         try{
+            //Gives the user a point if their answer is correct
             if(quiz.getLstQuestions().get(questionNumber).getAnswerPosition() == 0){
                 correctAnswers++;
                 Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
             }
+
+            //Displays the correct answer to the Question by highlighting it green
             displayCorrectAnswer(0);
         }
         catch(Exception exc){
@@ -181,10 +191,13 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
     //Method accepts the user's answer as option two
     public void optionTwoOnClick(View view){
         try{
+            //Gives the user a point if their answer is correct
             if(quiz.getLstQuestions().get(questionNumber).getAnswerPosition() == 1){
                 correctAnswers++;
                 Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
             }
+
+            //Displays the correct answer to the Question by highlighting it green
             displayCorrectAnswer(1);
         }
         catch(Exception exc){
@@ -195,10 +208,13 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
     //Method accepts the user's answer as option three
     public void optionThreeOnClick(View view){
         try{
+            //Gives the user a point if their answer is correct
             if(quiz.getLstQuestions().get(questionNumber).getAnswerPosition() == 2){
                 correctAnswers++;
                 Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
             }
+
+            //Displays the correct answer to the Question by highlighting it green
             displayCorrectAnswer(2);
         }
         catch(Exception exc){
@@ -209,10 +225,13 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
     //Method accepts the user's answer as option four
     public void optionFourOnClick(View view){
         try{
+            //Gives the user a point if their answer is correct
             if(quiz.getLstQuestions().get(questionNumber).getAnswerPosition() == 3){
                 correctAnswers++;
                 Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
             }
+
+            //Displays the correct answer to the Question by highlighting it green
             displayCorrectAnswer(3);
         }
         catch(Exception exc){
@@ -268,20 +287,23 @@ public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
     }
 
-    //Reads the question out loud to the user
+    //Reads the Question out loud to the user
     @Override
     public void onInit(int status) {
+        //View assignments
         TextView txtQuestion = (TextView) findViewById(R.id.text_question);
         Button btnOptionOne = (Button) findViewById(R.id.button_option_one);
         Button btnOptionTwo = (Button) findViewById(R.id.button_option_two);
         Button btnOptionThree = (Button) findViewById(R.id.button_option_three);
         Button btnOptionFour = (Button) findViewById(R.id.button_option_four);
 
+        //Reads the Question out loud
         String question = txtQuestion.getText().toString() + ". " + " Option one: " + btnOptionOne.getText().toString() + ". " + " Option two: " + btnOptionTwo.getText().toString() + ". " + " Option three: " + btnOptionThree.getText().toString() + ". " + " Option four: " + btnOptionFour.getText().toString();
         textToSpeech.setLanguage(Locale.US);
         textToSpeech.speak(question, TextToSpeech.QUEUE_FLUSH, null);
     }
 
+    //Processes the data returned from FirebaseService
     private class DataReceiver extends ResultReceiver {
         private DataReceiver(Handler handler) {
             super(handler);

@@ -14,8 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textSize="@dimen/statistics_activity_text_size"
-        android:layout_above="@id/progress_bar"
-        android:textColor="@color/black"/>
+        android:layout_above="@+id/text_statistics"
+        android:textColor="@color/black"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
 
     <ProgressBar
@@ -34,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textSize="@dimen/statistics_activity_text_size"
-        android:layout_below="@id/progress_bar"
+        android:layout_above="@id/progress_bar"
         android:textColor="@color/black"/>
 
     <ProgressBar

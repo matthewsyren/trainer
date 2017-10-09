@@ -1,7 +1,7 @@
 /*
  * Author: Matthew Syrén
  *
- * Date:   29 August 2017
+ * Date:   10 October 2017
  *
  * Description: Class used to allow the user to login to their account
  */
@@ -14,12 +14,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -39,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
             //Hides ProgressBar
             toggleProgressBarVisibility(View.INVISIBLE);
 
-            //Takes the user to the HomeActivity if they have already signed in
+            //Takes the user to the appropriate Activity if they have already signed in
             User user = new User(this);
             if(user.getUserEmailAddress() != null){
                 signIn(user.isUserAdminRights());
@@ -83,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
             //Displays ProgressBar
             toggleProgressBarVisibility(View.VISIBLE);
 
-            //Tries to sign the user in using the Firebase authentication database
+            //Tries to sign the user in using the Firebase Authentication Database
             firebaseAuth.signInWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -114,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.putBoolean("userAdminRights", adminRights);
             editor.apply();
 
+            //Takes the user to the appropriate Activity
             signIn(adminRights);
         }
         catch(Exception exc){

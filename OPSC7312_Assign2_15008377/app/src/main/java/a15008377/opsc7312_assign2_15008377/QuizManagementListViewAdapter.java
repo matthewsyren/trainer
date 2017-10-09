@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class displays Quiz information in a ListView and allows the user to delete a Quiz, and download or upload a video
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.app.Activity;
@@ -7,11 +15,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -34,10 +40,6 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by Matthew Syrén on 2017/09/16.
- */
-
 public class QuizManagementListViewAdapter extends ArrayAdapter {
     //Declarations
     private Context context;
@@ -49,7 +51,6 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
     int quizToDelete;
 
     //Constructor
-
     public QuizManagementListViewAdapter(Context context, ArrayList<Quiz> lstQuizzes) {
         super(context, R.layout.list_view_row_quiz_management, lstQuizzes);
         this.context = context;
@@ -58,7 +59,7 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
         notificationBuilder = new Notification.Builder(context);
     }
 
-    //Method populates the appropriate Views with the appropriate data (stored in the lstQuizzes ArrayList)
+    //Method populates the appropriate Views with the appropriate data
     @SuppressWarnings("VisibleForTests")
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
@@ -81,8 +82,10 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
         progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar_video_download);
         progressBar.setVisibility(View.INVISIBLE);
 
+        //Checks to see if the video for the Quiz has already been downloaded
         boolean fileDownloaded = checkForFile(position);
 
+        //Changes the image for the button based on whether the video has been downloaded
         if(fileDownloaded){
             btnDownloadVideo.setImageResource(R.drawable.ic_play_arrow_black_24dp);
         }
@@ -112,23 +115,26 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
             }
         });
 
+        //Downloads the video from Firebase Storage, or plays it if the video has already been downloaded
         btnDownloadVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean fileDownloaded = checkForFile(position);
                 if(fileDownloaded){
+                    //Plays video
                     Intent intent = new Intent(context, VideoViewerActivity.class);
                     intent.putExtra("fileName", lstQuizzes.get(position).getKey() + ".mp4");
                     context.startActivity(intent);
                 }
                 else{
+                    //Downloads video
                     try{
                         progressBar.setVisibility(View.VISIBLE);
                         btnDownloadVideo.setVisibility(View.INVISIBLE);
 
-                        //Downloads file if file hasn't been downloaded already
+                        //Sets up notification
                         notificationBuilder.setOngoing(false)
-                                .setContentTitle("Teaching")
+                                .setContentTitle("Trainer")
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setContentText("Video is downloading...")
                                 .setProgress(100, 100, false);
@@ -150,11 +156,12 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
                         }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                //Updates the download progress
                                 int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
                                 notificationBuilder.setProgress(100, progress, false);
                                 notificationBuilder.setContentText("Downloading: " + progress + "%");
 
-                                //Send the notification:
+                                //Display the notification
                                 if (progress == 100) {
                                     notificationManager.cancel(notificationID);
                                 }
@@ -207,6 +214,7 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
                     public void onClick(DialogInterface dialog, int button) {
                         switch(button){
                             case AlertDialog.BUTTON_POSITIVE:
+                                //Requests deletion of Quiz
                                 quizToDelete = position;
                                 new Statistic().requestDeleteOfStatistic(lstQuizzes.get(position).getKey(), context, new DataReceiver(new Handler()));
                                 break;
@@ -256,6 +264,7 @@ public class QuizManagementListViewAdapter extends ArrayAdapter {
                 lstQuizzes.get(quizToDelete).requestWriteOfQuiz(context, "delete", new DataReceiver(new Handler()));
             }
             else if(resultCode == FirebaseService.ACTION_WRITE_QUIZ_RESULT_CODE){
+                //Removes the Quiz from the ListView
                 lstQuizzes.remove(quizToDelete);
                 notifyDataSetChanged();
                 Toast.makeText(context, "Quiz successfully deleted", Toast.LENGTH_LONG).show();

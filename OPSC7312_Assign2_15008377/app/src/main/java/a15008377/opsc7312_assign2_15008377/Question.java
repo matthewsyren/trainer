@@ -1,14 +1,17 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class provides the basis for a Question object
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.widget.Toast;
 
 import java.io.Serializable;
-
-/**
- * Created by Matthew Syrén on 2017/09/16.
- */
 
 public class Question implements Serializable{
     //Declarations
@@ -19,10 +22,12 @@ public class Question implements Serializable{
     private String optionFour;
     private int answerPosition;
 
+    //Default constructor (needed for Firebase)
     public Question(){
 
     }
 
+    //Constructor
     public Question(String question, String optionOne, String optionTwo, String optionThree, String optionFour, int answerPosition) {
         this.question = question;
         this.optionOne = optionOne;
@@ -32,6 +37,7 @@ public class Question implements Serializable{
         this.answerPosition = answerPosition;
     }
 
+    //Getter methods
     public String getQuestion() {
         return question;
     }

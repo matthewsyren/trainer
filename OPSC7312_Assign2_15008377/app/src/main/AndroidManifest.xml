@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="a15008377.opsc7312_assign2_15008377">
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -8,16 +9,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".QuizSetterActivity" />
-        <activity android:name=".LoginActivity">
+        <activity
+            android:name=".QuizSetterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".QuizActivity" />
+        <activity
+            android:name=".CreateAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".QuizActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".FirebaseService"
@@ -26,26 +35,41 @@
         <activity
             android:name=".QuizFetcherActivity"
             android:label="@string/title_activity_quiz_fetcher"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".QuizManagerActivity"
             android:label="@string/title_activity_quiz_manager"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".VideoMakerActivity" />
         <activity
             android:name=".PastQuizActivity"
             android:label="@string/title_activity_past_quiz"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserStatisticsActivity"
             android:label="@string/title_activity_user_statistics"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AdminStatisticsActivity"
             android:label="@string/title_activity_admin_statistics"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AdminSpecificStatisticsActivity" />
-        <activity android:name=".VideoViewerActivity"></activity>
+        <activity
+            android:name=".AdminSpecificStatisticsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VideoViewerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UserHelpActivity"
+            android:label="@string/title_activity_user_help"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AdminHelpActivity"
+            android:label="@string/title_activity_admin_help"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

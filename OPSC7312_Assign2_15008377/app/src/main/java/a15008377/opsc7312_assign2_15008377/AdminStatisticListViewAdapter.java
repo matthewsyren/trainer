@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class displays user statistic information in a ListView
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.app.Activity;
@@ -10,10 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
-/**
- * Created by Matthew Syrén on 2017/09/16.
- */
 
 public class AdminStatisticListViewAdapter extends ArrayAdapter {
     //Declarations

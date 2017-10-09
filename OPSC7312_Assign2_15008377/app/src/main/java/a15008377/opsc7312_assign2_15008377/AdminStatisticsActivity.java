@@ -1,8 +1,15 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class displays user's average results to the admin. The admin can click on a specific user for more information
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.audiofx.LoudnessEnhancer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -17,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class AdminStatisticsActivity extends AdminBaseActivity {
     //Declarations
@@ -26,39 +34,44 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_statistics);
-        context = this;
+        try{
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_admin_statistics);
+            context = this;
 
-        //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Statistics
-        super.onCreateDrawer();
-        super.setSelectedNavItem(R.id.nav_statistics);
+            //Sets the NavigationDrawer for the Activity and sets the selected item in the NavigationDrawer to Statistics
+            super.onCreateDrawer();
+            super.setSelectedNavItem(R.id.nav_statistics);
 
-        //Fetches the necessary data for this Activity
-        new User().requestUsers(null, getApplicationContext(), new DataReceiver(new Handler()));
-        toggleProgressBarVisibility(View.VISIBLE);
+            //Fetches the necessary data for this Activity
+            new User().requestUsers(null, getApplicationContext(), new DataReceiver(new Handler()));
+            toggleProgressBarVisibility(View.VISIBLE);
 
-        //Sets the TextChangedListener for the text_search_users, which will perform a search when the user types
-        final EditText txtSearchUsers = (EditText) findViewById(R.id.text_search_users);
-        txtSearchUsers.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            //Sets the TextChangedListener for the text_search_users, which will perform a search when the user types
+            final EditText txtSearchUsers = (EditText) findViewById(R.id.text_search_users);
+            txtSearchUsers.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchUsers(txtSearchUsers);
-            }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    searchUsers(txtSearchUsers);
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                @Override
+                public void afterTextChanged(Editable s) {
 
-            }
-        });
+                }
+            });
 
-        //Prevents the keyboard from appearing automatically. Learnt from https://stackoverflow.com/questions/2496901/android-on-screen-keyboard-auto-popping-up
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            //Prevents the keyboard from appearing automatically. Learnt from https://stackoverflow.com/questions/2496901/android-on-screen-keyboard-auto-popping-up
+            this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //Method fetches all Users that match the search
@@ -89,6 +102,7 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
         }
     }
 
+    //Processes the data returned from FirebaseService
     private class DataReceiver extends ResultReceiver {
         private DataReceiver(Handler handler) {
             super(handler);
@@ -98,6 +112,7 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
         protected void onReceiveResult ( int resultCode, Bundle resultData){
             //Performs the appropriate action once the data has been fetched from Firebase
             if(resultCode == FirebaseService.ACTION_FETCH_USER_RESULT_CODE){
+                //Saves Users and requests Statistics
                 lstUsers = (ArrayList<User>) resultData.getSerializable(FirebaseService.ACTION_FETCH_USER);
                 new Statistic().requestStatistics(null, getApplicationContext(), new DataReceiver(new Handler()));
             }
@@ -108,6 +123,7 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
                     Toast.makeText(getApplicationContext(), "There are no results for any quizzes in the database", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    //Displays the users and their average results in the ListView
                     AdminStatisticListViewAdapter adminStatisticListViewAdapter = new AdminStatisticListViewAdapter(context, lstUsers, lstStatistics);
                     ListView listView = (ListView) findViewById(R.id.list_view_admin_statistics);
                     listView.setAdapter(adminStatisticListViewAdapter);

@@ -25,27 +25,33 @@
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/text_input_layout_question"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/text_question"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/text_input_layout_question"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/text_question"
-                    android:inputType="textEmailAddress" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_toLeftOf="@+id/button_listen_for_speech">
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/text_question"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/text_question"
+                        android:inputType="textEmailAddress" />
+                </android.support.design.widget.TextInputLayout>
 
-            <ImageButton
-                android:id="@+id/button_listen_for_speech"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="listenToSpeechOnClick"
-                android:src="@drawable/ic_settings_voice_black_24dp"
-                android:background="@drawable/button_rounded"
-                android:tint="@color/colorPrimary"
-                android:padding="@dimen/button_padding"/>
+                <ImageButton
+                    android:id="@+id/button_listen_for_speech"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="listenToSpeechOnClick"
+                    android:src="@drawable/ic_settings_voice_black_24dp"
+                    android:background="@drawable/button_rounded"
+                    android:tint="@color/colorPrimary"
+                    android:padding="@dimen/button_padding"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_option_one"
@@ -105,7 +111,6 @@
                 android:id="@+id/spinner_correct_answer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/spinner_correct_answer"
                 style="@style/Widget.AppCompat.Spinner.DropDown"
                 android:padding="@dimen/activity_vertical_margin"
                 android:layout_marginBottom="@dimen/activity_vertical_margin">
@@ -121,10 +126,19 @@
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:onClick="addQuestionOnClick"/>
 
+            <TextView
+                android:id="@+id/text_delivery_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/HeadingTextStyle"
+                android:text="@string/text_questions"
+                android:gravity="center_horizontal"
+                android:textColor="@color/black" />
+
             <ListView
                 android:id="@+id/list_view_quiz_questions"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="275dp" />
 
             <Button
                 android:id="@+id/button_add_quiz"

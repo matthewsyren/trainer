@@ -6,8 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="a15008377.opsc7312_assign2_15008377.AdminSpecificStatisticsActivity">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_user_statistics"
+        android:text="@string/text_user_statistics"
+        style="@style/HeadingTextStyle"/>
+
     <ListView
         android:id="@+id/list_view_user_results"
+        android:layout_below="@id/text_user_statistics"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

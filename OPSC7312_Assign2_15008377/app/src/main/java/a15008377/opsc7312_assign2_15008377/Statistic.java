@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class forms the basis for a Statistic object
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.Context;
@@ -7,24 +15,23 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 
-/**
- * Created by Matthew Syrén on 2017/09/30.
- */
-
 public class Statistic implements Serializable{
     private String userKey;
     private String quizKey;
     private double result;
 
+    //Constructor
     public Statistic(String quizKey, double result) {
         this.quizKey = quizKey;
         this.result = result;
     }
 
+    //Default constructor
     public Statistic(){
 
     }
 
+    //Getter methods
     public String getQuizKey() {
         return quizKey;
     }
@@ -37,6 +44,8 @@ public class Statistic implements Serializable{
         return userKey;
     }
 
+    //Setter methods
+
     public void setUserKey(String userKey) {
         this.userKey = userKey;
     }
@@ -45,7 +54,7 @@ public class Statistic implements Serializable{
         this.quizKey = quizKey;
     }
 
-    //Requests Quiz Items from the Firebase Database
+    //Requests Statistics from the Firebase Database
     public void requestStatistics(String searchTerm, Context context, ResultReceiver resultReceiver){
         try{
             //Requests Statistic information from the FirebaseService class
@@ -63,7 +72,7 @@ public class Statistic implements Serializable{
     //Method calls the FirebaseService class and passes in a Statistic object that must be written to the Firebase Database
     public void requestWriteOfStatistic(Context context, ResultReceiver resultReceiver){
         try{
-            //Requests location information from the LocationService class
+            //Requests write of Statistic information to the FirebaseService class
             Intent intent = new Intent(context, FirebaseService.class);
             intent.setAction(FirebaseService.ACTION_WRITE_STATISTIC);
             intent.putExtra(FirebaseService.ACTION_WRITE_STATISTIC, this);
@@ -78,7 +87,7 @@ public class Statistic implements Serializable{
     //Method requests that all Statistics for a specific Quiz are deleted
     public void requestDeleteOfStatistic(String quizID, Context context, ResultReceiver resultReceiver){
         try{
-            //Requests location information from the LocationService class
+            //Requests deletion of Statistic information from the FirebaseService class
             Intent intent = new Intent(context, FirebaseService.class);
             intent.setAction(FirebaseService.ACTION_DELETE_STATISTIC);
             intent.putExtra(FirebaseService.QUIZ_ID, quizID);

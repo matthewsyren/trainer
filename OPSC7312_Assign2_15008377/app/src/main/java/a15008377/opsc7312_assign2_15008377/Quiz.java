@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class provides the basis for a Quiz object
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.Context;
@@ -9,20 +17,18 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-/**
- * Created by Matthew Syrén on 2017/09/16.
- */
-
 public class Quiz implements Serializable{
     //Declarations
     private String name;
     private String key;
     private ArrayList<Question> lstQuestions;
 
+    //Default constructor (needed for Firebase)
     public Quiz(){
 
     }
 
+    //Constructor
     public Quiz(String name, ArrayList<Question> lstQuestions) {
         this.name = name;
         this.lstQuestions = lstQuestions;
@@ -62,7 +68,7 @@ public class Quiz implements Serializable{
         return valid;
     }
 
-    //Requests Quiz Items from the Firebase Database
+    //Requests Quizzes from the Firebase Database
     public void requestQuizzes(String searchTerm, Context context, ResultReceiver resultReceiver){
         try{
             //Requests Quiz information from the FirebaseService class

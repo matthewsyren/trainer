@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class allows the user to add a new Quiz
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.ActivityNotFoundException;
@@ -24,20 +32,23 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class QuizSetterActivity extends AppCompatActivity {
+    //Declarations
     private final int SPEECH_INPUT_RESULT_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_quiz_setter);
 
+            //Sets adapter for ListView
             ListView listView = (ListView) findViewById(R.id.list_view_quiz_questions);
             QuizQuestionListViewAdapter quizQuestionListViewAdapter = new QuizQuestionListViewAdapter(this, new ArrayList<Question>());
             listView.setAdapter(quizQuestionListViewAdapter);
 
+            //Adds options to Spinner
             Spinner spinner = (Spinner) findViewById(R.id.spinner_correct_answer);
             String[] possibleAnswers = {"Option One", "Option Two", "Option Three", "Option Four"};
-
             ArrayAdapter adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_row, R.id.text_spinner_item_id, possibleAnswers);
             spinner.setAdapter(adapter);
 
@@ -84,7 +95,7 @@ public class QuizSetterActivity extends AppCompatActivity {
         try{
             int id = item.getItemId();
 
-            //Takes the user back to the DeliveryControlActivity if the button that was pressed was the back button
+            //Takes the user back to the QuizManagerActivity if the button that was pressed was the back button
             if (id == android.R.id.home) {
                 Intent intent = new Intent(QuizSetterActivity.this, QuizManagerActivity.class);
                 startActivity(intent);
@@ -100,6 +111,7 @@ public class QuizSetterActivity extends AppCompatActivity {
     //Method adds a new Question to the ListView
     public void addQuestionOnClick(View view){
         try{
+            //View assignments
             EditText txtQuestion = (EditText) findViewById(R.id.text_question);
             EditText txtOptionOne = (EditText) findViewById(R.id.text_option_one);
             EditText txtOptionTwo = (EditText) findViewById(R.id.text_option_two);
@@ -107,6 +119,7 @@ public class QuizSetterActivity extends AppCompatActivity {
             EditText txtOptionFour = (EditText) findViewById(R.id.text_option_four);
             Spinner spnCorrectAnswer = (Spinner) findViewById(R.id.spinner_correct_answer);
 
+            //Getting information from Views
             String questionText = txtQuestion.getText().toString();
             String optionOne = txtOptionOne.getText().toString();
             String optionTwo = txtOptionTwo.getText().toString();
@@ -114,8 +127,10 @@ public class QuizSetterActivity extends AppCompatActivity {
             String optionFour = txtOptionFour.getText().toString();
             int correctAnswerPosition = spnCorrectAnswer.getSelectedItemPosition();
 
+            //Adds Question to ListView if the Question is valid (no missing information)
             Question question = new Question(questionText, optionOne, optionTwo, optionThree, optionFour, correctAnswerPosition);
             if(question.validateQuestion(this)){
+                //Adds Question to ListView adapter
                 ListView listView = (ListView) findViewById(R.id.list_view_quiz_questions);
                 QuizQuestionListViewAdapter quizQuestionListViewAdapter = (QuizQuestionListViewAdapter) listView.getAdapter();
                 quizQuestionListViewAdapter.add(question);
@@ -144,11 +159,13 @@ public class QuizSetterActivity extends AppCompatActivity {
             QuizQuestionListViewAdapter quizQuestionListViewAdapter = (QuizQuestionListViewAdapter) listView.getAdapter();
             ArrayList<Question> lstQuestions = new ArrayList<>();
 
+            //Adds all Questions to the Quiz
             for(int i = 0; i < quizQuestionListViewAdapter.getCount(); i++){
                 Question question = (Question) quizQuestionListViewAdapter.getItem(i);
                 lstQuestions.add(question);
             }
 
+            //Writes Quiz to Firebase if the Quiz is valid (no missing information)
             Quiz quiz = new Quiz(quizName, lstQuestions);
             if(quiz.validateQuiz(this)){
                 quiz.requestWriteOfQuiz(this, null, new DataReceiver(new Handler()));
@@ -162,11 +179,8 @@ public class QuizSetterActivity extends AppCompatActivity {
         }
     }
 
+    //Listens to user's speech input
     public void listenToSpeechOnClick(View view){
-        promptSpeechInput();
-    }
-
-    private void promptSpeechInput() {
         try {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -187,6 +201,7 @@ public class QuizSetterActivity extends AppCompatActivity {
         switch (requestCode) {
             case SPEECH_INPUT_RESULT_CODE: {
                 if (resultCode == RESULT_OK && null != data) {
+                    //Writes the user's speech input result to the text_question EditText
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     TextView txtQuestion = (TextView) findViewById(R.id.text_question);
                     txtQuestion.setText(result.get(0));
@@ -196,6 +211,7 @@ public class QuizSetterActivity extends AppCompatActivity {
         }
     }
 
+    //Processes the data received from FirebaseService
     private class DataReceiver extends ResultReceiver {
         private DataReceiver(Handler handler) {
             super(handler);

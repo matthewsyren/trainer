@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="a15008377.opsc7312_assign2_15008377.PastQuizActivity">
+    tools:context="a15008377.opsc7312_assign2_15008377.UserHelpActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -25,24 +24,17 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:id="@+id/button_menu" />
 
-            <EditText
-                android:id="@+id/text_search_quizzes"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/nav_help"
                 android:textSize="@dimen/app_bar_text_size"
-                android:background="@color/white"
                 android:textColor="@color/black"
-                android:textColorHint="@color/gray"
-                android:layout_marginLeft="@dimen/app_bar_margin"
-                android:layout_marginRight="@dimen/app_bar_margin"
-                android:paddingLeft="@dimen/app_bar_search_padding"
-                android:imeOptions="actionSearch"
-                android:hint="@string/text_search_quiz_hint"
-                android:maxLines="1"/>
+                android:layout_marginLeft="@dimen/app_bar_margin"/>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_past_quiz" />
+    <include layout="@layout/content_user_help" />
 
 </android.support.design.widget.CoordinatorLayout>

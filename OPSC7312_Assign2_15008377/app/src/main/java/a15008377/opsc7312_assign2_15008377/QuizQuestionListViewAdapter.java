@@ -1,9 +1,16 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class allows the user to view and delete the Questions included in the Quiz
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-
-/**
- * Created by Matthew Syrén on 2017/09/16.
- */
 
 public class QuizQuestionListViewAdapter extends ArrayAdapter {
     //Declarations
@@ -26,14 +27,13 @@ public class QuizQuestionListViewAdapter extends ArrayAdapter {
     private ArrayList<Question> lstQuestions;
 
     //Constructor
-
     public QuizQuestionListViewAdapter(Context context, ArrayList<Question> lstQuestions) {
         super(context, R.layout.list_view_row_quiz_questions, lstQuestions);
         this.context = context;
         this.lstQuestions = lstQuestions;
     }
 
-    //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
+    //Method populates the appropriate Views with the appropriate data
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         //View declarations

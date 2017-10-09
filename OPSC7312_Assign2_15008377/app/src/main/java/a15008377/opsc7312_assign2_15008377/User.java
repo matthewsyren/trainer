@@ -1,7 +1,7 @@
 /*
  * Author: Matthew Syrén
  *
- * Date:   29 August 2017
+ * Date:   10 October 2017
  *
  * Description: Class provides a basis for a User object
  */
@@ -43,6 +43,7 @@ public class User {
         this.userPassword = userPassword;
     }
 
+    //Default constructor
     public User(){
 
     }
@@ -56,7 +57,7 @@ public class User {
         userAdminRights = preferences.getBoolean("userAdminRights", false);
     }
 
-    //Accessor methods
+    //Getter methods
     public String getUserFullName() {
         return userFullName;
     }
@@ -84,6 +85,7 @@ public class User {
 
     //Method gets the unique key used by Firebase to store information about the user signed in
     public void setKey(final LoginActivity context){
+        //Gets reference to the Firebase Database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference().child("Users");
 
@@ -117,7 +119,7 @@ public class User {
     //Requests Users from the Firebase Database
     public void requestUsers(String searchTerm, Context context, ResultReceiver resultReceiver){
         try{
-            //Requests Statistic information from the FirebaseService class
+            //Requests User information from the FirebaseService class
             Intent intent = new Intent(context, FirebaseService.class);
             intent.setAction(FirebaseService.ACTION_FETCH_USER);
             intent.putExtra(FirebaseService.USER_NAME, searchTerm);

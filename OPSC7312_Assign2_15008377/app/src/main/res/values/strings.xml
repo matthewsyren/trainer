@@ -17,12 +17,6 @@
     <string name="text_option_four">Option Four</string>
     <string name="button_add_question">Add Question</string>
     <string name="text_correct_answer">Correct Answer:</string>
-    <string-array name="spinner_correct_answer">
-        <item>Option One</item>
-        <item>Option Two</item>
-        <item>Option Three</item>
-        <item>Option Four</item>
-    </string-array>
     <string name="list_view_text_quiz_name">Quiz Name: %s</string>
     <string name="list_view_text_question">Question: %s</string>
     <string name="list_view_text_option_one">Option One: %s</string>
@@ -35,7 +29,6 @@
     <string name="list_view_text_user_average_result">Average: %.2f%%</string>
     <string name="text_user_average_result">Average: %.2f%%</string>
     <string name="text_current_rank">Current Rank: %d</string>
-
 
 
     <string name="button_add_quiz">Add Quiz</string>
@@ -59,8 +52,18 @@
     <string name="title_activity_user_home">User Home</string>
     <string name="title_activity_quiz_manager">Quiz Manager</string>
     <string name="title_activity_past_quiz">Past Quizzes</string>
-    <string name="title_activity_user_statistics">UserStatisticsActivity</string>
+    <string name="title_activity_user_statistics">Your Statistics</string>
     <string name="title_activity_admin_statistics">AdminStatisticsActivity</string>
     <string name="title_activity_quiz_viewer">QuizViewerActivity</string>
     <string name="text_search_quiz_hint">Type to search...</string>
+    <string name="title_activity_user_help">UserHelpActivity</string>
+    <string name="title_activity_admin_help">AdminHelpActivity</string>
+
+    <string name="text_admin_statistics">User average results</string>
+    <string name="text_past_quizzes">Past Quizzes</string>
+    <string name="text_new_quizzes">New Quizzes</string>
+    <string name="text_quizzes">Quizzes</string>
+    <string name="text_user_statistics">User Statistics</string>
+    <string name="text_admin_help">As the admin user, you will be able to create quizzes and upload a tutorial video for the quizzes you create (each quiz can only have one video associated with it), as well as view the results of the users that take the quizzes you create. \n\nTo add a Quiz, click on the + button on the Quizzes screen. You can then enter as many questions as you\'d like for the quiz. Each question is multiple choice, and has 4 options. You can choose the correct answer by selecting the appropriate option in the drop down menu. \n\nTo record a video, click on the video record button for the appropriate quiz. You can then record the tutorial video and upload it. Once the video has been uploaded, all the users of the app will be able to download and view it. If you\'d like to replace a video for a quiz, click on the same video recorder icon and repeat the process. The app will then overwrite your previous video. \n\nTo view a video, click on the download button for the appropriate quiz. This will download the video onto your phone. Once downloaded, the download button will change to a play button, which you can then click on to play the video. \n\nTo delete a quiz, click on the delete button for the appropriate quiz. Note: You can\'t update quiz questions once they have been added, as this may cause an unfair comparison between the results of the users.</string>
+    <string name="text_questions">Questions</string>
 </resources>

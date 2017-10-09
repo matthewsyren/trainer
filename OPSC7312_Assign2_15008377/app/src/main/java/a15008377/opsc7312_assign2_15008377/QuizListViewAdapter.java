@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class displays Quiz information in a ListView
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.app.Activity;
@@ -7,7 +15,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +33,7 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-
-/**
- * Created by Matthew Syrén on 2017/09/16.
- */
 
 public class QuizListViewAdapter extends ArrayAdapter {
     //Declarations
@@ -44,7 +45,6 @@ public class QuizListViewAdapter extends ArrayAdapter {
     Notification notification;
 
     //Constructor
-
     public QuizListViewAdapter(Context context, ArrayList<Quiz> lstQuizzes) {
         super(context, R.layout.list_view_row_quizzes, lstQuizzes);
         this.context = context;
@@ -54,7 +54,7 @@ public class QuizListViewAdapter extends ArrayAdapter {
     }
 
     @SuppressWarnings("VisibleForTests")
-    //Method populates the appropriate Views with the appropriate data (stored in the shows ArrayList)
+    //Method populates the appropriate Views with the appropriate data
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         //View declarations
@@ -73,8 +73,10 @@ public class QuizListViewAdapter extends ArrayAdapter {
         progressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar_video_download);
         progressBar.setVisibility(View.INVISIBLE);
 
+        //Checks to see if the user has already downloaded the video for the Quiz
         boolean fileDownloaded = checkForFile(position);
 
+        //Sets the image for the button based on whether the video has been downloaded
         if(fileDownloaded){
             btnDownloadVideo.setImageResource(R.drawable.ic_play_arrow_black_24dp);
         }
@@ -104,23 +106,26 @@ public class QuizListViewAdapter extends ArrayAdapter {
             }
         });
 
+        //Downloads the video from Firebase Storage, or plays it if the video has already been downloaded
         btnDownloadVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean fileDownloaded = checkForFile(position);
                 if(fileDownloaded){
+                    //Plays video
                     Intent intent = new Intent(context, VideoViewerActivity.class);
                     intent.putExtra("fileName", lstQuizzes.get(position).getKey() + ".mp4");
                     context.startActivity(intent);
                 }
                 else{
+                    //Downloads video
                     try{
                         progressBar.setVisibility(View.VISIBLE);
                         btnDownloadVideo.setVisibility(View.INVISIBLE);
 
-                        //Downloads file if file hasn't been downloaded already
+                        //Sets up notification
                         notificationBuilder.setOngoing(false)
-                                .setContentTitle("Teaching")
+                                .setContentTitle("Trainer")
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setContentText("Video is downloading...")
                                 .setProgress(100, 100, false);
@@ -142,11 +147,12 @@ public class QuizListViewAdapter extends ArrayAdapter {
                         }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                //Updates the download progress
                                 int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
                                 notificationBuilder.setProgress(100, progress, false);
                                 notificationBuilder.setContentText("Downloading: " + progress + "%");
 
-                                //Send the notification:
+                                //Displays the notification
                                 if (progress == 100) {
                                     notificationManager.cancel(notificationID);
                                 }

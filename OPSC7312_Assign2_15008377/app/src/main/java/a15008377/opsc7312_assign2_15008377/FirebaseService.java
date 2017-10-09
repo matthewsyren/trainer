@@ -1,7 +1,7 @@
 /*
  * Author: Matthew Syrén
  *
- * Date:   29 August 2017
+ * Date:   10 October 2017
  *
  * Description: Class defines methods that the user can use to read/write data from/to the Firebase Database
  */
@@ -102,7 +102,7 @@ public class FirebaseService extends IntentService {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //Loops through all Quizzes and adds them to the lstQuiz ArrayList
+                //Loops through all Quizzes and adds them to the lstQuizzes ArrayList
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
                     //Retrieves the Quiz from Firebase and adds the Quiz to an ArrayList of Quiz objects
@@ -126,7 +126,7 @@ public class FirebaseService extends IntentService {
         });
     }
 
-    //Method writes a Quiz object to the Firebase database
+    //Method writes a Quiz object to the Firebase Database
     private void startActionWriteQuiz(final Quiz quiz, final String writeInformation){
         //Gets reference to Firebase
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -136,6 +136,7 @@ public class FirebaseService extends IntentService {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Saves information if writeInformation is null, otherwise deletes the Quiz and its video
                 if(writeInformation == null){
                     String quizKey = databaseReference.push().getKey();
                     databaseReference.child(quizKey).setValue(quiz);
@@ -175,7 +176,7 @@ public class FirebaseService extends IntentService {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //Loops through all Quizzes and adds them to the lstQuiz ArrayList
+                //Loops through all Statistics and adds them to the lstStatistics ArrayList
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
                     if(userKey == null || snapshot.getKey().equals(userKey)) {
@@ -212,7 +213,7 @@ public class FirebaseService extends IntentService {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //Loops through all Quizzes and adds them to the lstQuiz ArrayList
+                //Loops through all Statistics deletes and Statistics that have the Quiz key that is being deleted
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
                     for(DataSnapshot statisticSnapshot : snapshot.getChildren()){
@@ -247,6 +248,7 @@ public class FirebaseService extends IntentService {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Saves Statistic data to the Firebase Database
                 String quizKey = statistic.getQuizKey();
                 Statistic statisticNoKey = new Statistic(null, statistic.getResult());
                 databaseReference.child(quizKey).setValue(statisticNoKey);
@@ -276,10 +278,10 @@ public class FirebaseService extends IntentService {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //Loops through all Quizzes and adds them to the lstQuiz ArrayList
+                //Loops through all Users and adds them to the lstUsers ArrayList
                 Iterable<DataSnapshot> lstSnapshots = dataSnapshot.getChildren();
                 for(DataSnapshot snapshot : lstSnapshots){
-                    //Retrieves the Quiz from Firebase and adds the Quiz to an ArrayList of Quiz objects
+                    //Retrieves the User from Firebase and adds the User to an ArrayList of User objects
                     String fullName = (String) snapshot.child("userFullName").getValue();
                     if(searchTerm == null || fullName.contains(searchTerm)){
                         String adminRights = (String) snapshot.child("userAdminRights").getValue();
@@ -331,7 +333,7 @@ public class FirebaseService extends IntentService {
         resultReceiver.send(ACTION_WRITE_STATISTIC_RESULT_CODE, bundle);
     }
 
-    //Returns the result of writing Statistic data
+    //Returns the result of deleting Statistic data
     private void returnDeleteStatisticResult(boolean success){
         Bundle bundle = new Bundle();
         bundle.putSerializable(ACTION_DELETE_STATISTIC, success);

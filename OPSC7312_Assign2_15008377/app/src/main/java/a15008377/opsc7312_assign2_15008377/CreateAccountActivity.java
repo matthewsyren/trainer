@@ -1,7 +1,7 @@
 /*
  * Author: Matthew Syrén
  *
- * Date:   29 August 2017
+ * Date:   10 October 2017
  *
  * Description: Class allows the user to create an account
  */
@@ -12,12 +12,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -86,40 +83,50 @@ public class CreateAccountActivity extends AppCompatActivity {
             toggleProgressBarVisibility(View.VISIBLE);
 
             //Creates an account if the user's passwords match and they have entered valid data
-            if(password.equals(confirmPassword)){
-                final User user = new User(fullName, email, password, adminRights);
-                firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            String exception = task.getException().getMessage();
-                            if(exception.contains("WEAK_PASSWORD")){
-                                //Displays message telling the user to choose a stronger password
-                                Toast.makeText(getApplicationContext(), "The password you have entered is too weak, please enter a password with at least 6 characters", Toast.LENGTH_LONG).show();
+            if(password.length() >= 6){
+                if(password.equals(confirmPassword)){
+                    final User user = new User(fullName, email, password, adminRights);
+                    firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (!task.isSuccessful()) {
+                                String exception = task.getException().getMessage();
+                                if(exception.contains("WEAK_PASSWORD")){
+                                    //Displays message telling the user to choose a stronger password
+                                    Toast.makeText(getApplicationContext(), "The password you have entered is too weak, please enter a password with at least 6 characters", Toast.LENGTH_LONG).show();
+                                }
+                                else if(exception.contains("The email address is already in use by another account.")){
+                                    //Displays a message telling the user to choose another email address, as their desired email has already been used
+                                    Toast.makeText(getApplicationContext(), "The email address you have entered has already been used for this app, please enter another email address", Toast.LENGTH_LONG).show();
+                                }
+                                else if(exception.contains("The email address is badly formatted.")){
+                                    //Displays a message telling the user to enter a valid email address
+                                    Toast.makeText(getApplicationContext(), "The email address you have entered is invalid, please enter a valid email address e.g. yourname@example.com", Toast.LENGTH_LONG).show();
+                                }
+                                else{
+                                    Toast.makeText(CreateAccountActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                }
+                                //Hides ProgressBar
+                                toggleProgressBarVisibility(View.INVISIBLE);
                             }
-                            else if(exception.contains("The email address is already in use by another account.")){
-                                //Displays a message telling the user to choose another email address, as their desired email has already been used
-                                Toast.makeText(getApplicationContext(), "The email address you have entered has already been used for this app, please enter another email address", Toast.LENGTH_LONG).show();
+                            else if(task.isSuccessful()){
+                                //Registers the user in the Firebase authentication for this app
+                                pushUser(user.getUserFullName(), user.getUserEmailAddress(), user.isUserAdminRights());
                             }
-                            else if(exception.contains("The email address is badly formatted.")){
-                                //Displays a message telling the user to enter a valid email address
-                                Toast.makeText(getApplicationContext(), "The email address you have entered is invalid, please enter a valid email address e.g. yourname@example.com", Toast.LENGTH_LONG).show();
-                            }
-                            else{
-                                Toast.makeText(CreateAccountActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            }
-                            //Hides ProgressBar
-                            toggleProgressBarVisibility(View.INVISIBLE);
                         }
-                        else if(task.isSuccessful()){
-                            //Registers the user in the Firebase authentication for this app
-                            pushUser(user.getUserFullName(), user.getUserEmailAddress(), user.isUserAdminRights());
-                        }
-                    }
-                });
+                    });
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
+
+                    //Hides ProgressBar
+                    toggleProgressBarVisibility(View.INVISIBLE);
+                }
             }
             else{
-                Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Please enter a password that is at least 6 characters long", Toast.LENGTH_LONG).show();
+
+                //Hides ProgressBar
                 toggleProgressBarVisibility(View.INVISIBLE);
             }
         }
@@ -135,7 +142,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference databaseReference = database.getReference().child("Users");
 
-            //Generates the user's unique key and saves the value (the user's email address and whether they have admin rights) to the Firebase database
+            //Generates the user's unique key and saves the value (the user's email address, full name and whether they have admin rights) to the Firebase Database
             String key =  databaseReference.push().getKey();
             Map <String,String> hashMap = new HashMap<>();
             hashMap.put("userFullName", fullName);
@@ -152,7 +159,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             editor.apply();
             Toast.makeText(getApplicationContext(), "Account successfully created!", Toast.LENGTH_LONG).show();
 
-            //Takes the user to the next activity
+            //Takes the user to the appropriate activity based on whether they have admin rights or not
             Intent intent;
             if(adminRights){
                 intent = new Intent(CreateAccountActivity.this, QuizManagerActivity.class);

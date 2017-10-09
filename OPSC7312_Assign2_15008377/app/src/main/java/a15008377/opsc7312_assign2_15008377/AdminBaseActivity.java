@@ -1,7 +1,7 @@
 /*
  * Author: Matthew Syrén
  *
- * Date:   29 August 2017
+ * Date:   10 October 2017
  *
  * Description: Class provides the basis for the NavigationDrawer. The NavigationDrawer's processing is completed
  *              here, meaning any class that extends this class will have ful NavigationDrawer functionality
@@ -113,6 +113,9 @@ public class AdminBaseActivity extends FragmentActivity
         }
         else if(id == R.id.nav_statistics){
             startActivity(new Intent(getApplicationContext(), AdminStatisticsActivity.class));
+        }
+        else if(id == R.id.nav_help){
+            startActivity(new Intent(getApplicationContext(), AdminHelpActivity.class));
         }
         else if(id == R.id.nav_sign_out){
             //Signs the user out of Firebase

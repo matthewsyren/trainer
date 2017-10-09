@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class allows the user to watch a video
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.net.Uri;
@@ -18,6 +26,7 @@ public class VideoViewerActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_video_viewer);
 
+            //Plays the video that has been passed in
             playVideo();
 
             //Hides the ActionBar
@@ -31,6 +40,7 @@ public class VideoViewerActivity extends AppCompatActivity {
         }
     }
 
+    //Method plays the video for the user in a VideoView
     public void playVideo(){
         try{
             Bundle bundle = getIntent().getExtras();
@@ -42,11 +52,16 @@ public class VideoViewerActivity extends AppCompatActivity {
                 String name = files[i].getName();
 
                 if(fileName.equals(name)){
+                    //Sets the content for the VideoView to the appropriate video
                     VideoView videoView =  (VideoView) findViewById(R.id.video_view);
                     videoView.setVideoURI(Uri.parse(files[i].getAbsolutePath()));
+
+                    //Adds controls (rewind, play etc.) to the VideoView
                     MediaController mediaController = new MediaController(this);
                     videoView.setMediaController(mediaController);
                     mediaController.setAnchorView(videoView);
+
+                    //Starts the video
                     videoView.start();
                 }
             }

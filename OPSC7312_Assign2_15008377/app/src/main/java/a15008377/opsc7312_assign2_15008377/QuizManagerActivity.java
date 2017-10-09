@@ -1,3 +1,11 @@
+/*
+ * Author: Matthew Syrén
+ *
+ * Date:   10 October 2017
+ *
+ * Description: Class allows the user to manage Quizzes by deleting a Quiz, adding a Quiz, and downloading or uploading a video
+ */
+
 package a15008377.opsc7312_assign2_15008377;
 
 import android.app.Notification;
@@ -10,26 +18,15 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,7 +55,10 @@ public class QuizManagerActivity extends AdminBaseActivity {
             super.onCreateDrawer();
             super.setSelectedNavItem(R.id.nav_home);
 
+            //Requests Quizzes
             new Quiz().requestQuizzes(null, this, new DataReceiver(new Handler()));
+
+            //Displays ProgressBar
             toggleProgressBarVisibility(View.VISIBLE);
 
             //Sets the TextChangedListener for the text_search_quizzes, which will perform a search when the user types
@@ -86,6 +86,11 @@ public class QuizManagerActivity extends AdminBaseActivity {
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    //Method prevents the user from going back to the previous Activity by clicking the back button
+    @Override
+    public void onBackPressed() {
     }
 
     //Method fetches all Quizzes that match the search
@@ -133,26 +138,20 @@ public class QuizManagerActivity extends AdminBaseActivity {
             QuizManagementListViewAdapter quizListViewAdapter = new QuizManagementListViewAdapter(this, lstQuizzes);
             ListView listView = (ListView) findViewById(R.id.list_view_quizzes);
             listView.setAdapter(quizListViewAdapter);
-
-            //Sets OnItemClickListener to open the Quiz that the user clicked on
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(QuizManagerActivity.this, QuizActivity.class);
-                    intent.putExtra("quiz", lstQuizzes.get(position));
-                    startActivity(intent);
-                }
-            });
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
+    //Opens the video camera on the phone to record the tutorial video
     public void recordVideo(String quizKey){
         try{
+            //Sets up notification
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationBuilder = new Notification.Builder(this);
+
+            //Opens video camera
             Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
                 key = quizKey;
@@ -164,7 +163,7 @@ public class QuizManagerActivity extends AdminBaseActivity {
         }
     }
 
-    //Method displays the video in the VideoView
+    //Method displays uploads the video taken by the user
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         try{
@@ -183,6 +182,7 @@ public class QuizManagerActivity extends AdminBaseActivity {
     private void uploadVideo(Uri file){
         try{
             Toast.makeText(getApplicationContext(), "Starting upload, please don't close the app until the video has finished uploading...", Toast.LENGTH_LONG).show();
+
             //Displays notification for upload progress
             notificationBuilder.setOngoing(true)
                     .setContentTitle("Trainer")
@@ -210,6 +210,7 @@ public class QuizManagerActivity extends AdminBaseActivity {
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    //Updates upload progress
                     int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
                     notificationBuilder.setProgress(100, progress, false);
                     notificationBuilder.setContentText("Uploading: " + progress + "%");
@@ -230,6 +231,7 @@ public class QuizManagerActivity extends AdminBaseActivity {
         }
     }
 
+    //Processes the data received from FirebaseService
     private class DataReceiver extends ResultReceiver {
         private DataReceiver(Handler handler) {
             super(handler);
@@ -237,15 +239,18 @@ public class QuizManagerActivity extends AdminBaseActivity {
 
         @Override
         protected void onReceiveResult ( int resultCode, Bundle resultData){
-            //Processes the result when the Stock has been written to the Firebase Database
+            //Processes the result when the Quizzes have been fetched from the Firebase Database
             if (resultCode == FirebaseService.ACTION_FETCH_QUIZ_RESULT_CODE) {
                 ArrayList<Quiz> lstQuizzes = (ArrayList<Quiz>) resultData.getSerializable(FirebaseService.ACTION_FETCH_QUIZ);
                 if(lstQuizzes.size() == 0){
                     Toast.makeText(getApplicationContext(), "There are currently no quizzes in the database", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    //Displays the Quizzes
                     displayQuizzes(lstQuizzes);
                 }
+
+                //Hides ProgressBar
                 toggleProgressBarVisibility(View.INVISIBLE);
             }
         }

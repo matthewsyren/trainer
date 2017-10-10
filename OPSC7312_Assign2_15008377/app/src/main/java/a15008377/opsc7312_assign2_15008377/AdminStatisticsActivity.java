@@ -123,8 +123,17 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
                     Toast.makeText(getApplicationContext(), "There are no results for any quizzes in the database", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    //Creates an empty adapter
+                    final AdminStatisticListViewAdapter adminStatisticListViewAdapter = new AdminStatisticListViewAdapter(context, new ArrayList<User>(), lstStatistics);
+
+                    //Adds all users except admin users, as they don't take Quizzes
+                    for(int i = 0; i < lstUsers.size(); i++){
+                        if(!lstUsers.get(i).isUserAdminRights()){
+                            adminStatisticListViewAdapter.add(lstUsers.get(i));
+                        }
+                    }
+
                     //Displays the users and their average results in the ListView
-                    AdminStatisticListViewAdapter adminStatisticListViewAdapter = new AdminStatisticListViewAdapter(context, lstUsers, lstStatistics);
                     ListView listView = (ListView) findViewById(R.id.list_view_admin_statistics);
                     listView.setAdapter(adminStatisticListViewAdapter);
 
@@ -132,8 +141,9 @@ public class AdminStatisticsActivity extends AdminBaseActivity {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            User user = (User) adminStatisticListViewAdapter.getItem(position);
                             Intent intent = new Intent(AdminStatisticsActivity.this, AdminSpecificStatisticsActivity.class);
-                            intent.putExtra("userKey", lstUsers.get(position).getUserKey());
+                            intent.putExtra("userKey", user.getUserKey());
                             startActivity(intent);
                         }
                     });

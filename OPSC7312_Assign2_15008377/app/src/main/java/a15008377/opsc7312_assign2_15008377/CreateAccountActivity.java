@@ -83,9 +83,10 @@ public class CreateAccountActivity extends AppCompatActivity {
             toggleProgressBarVisibility(View.VISIBLE);
 
             //Creates an account if the user's passwords match and they have entered valid data
-            if(password.length() >= 6){
+            final User user = new User(fullName, email, password, adminRights);
+
+            if(user.validateUser(this)){
                 if(password.equals(confirmPassword)){
-                    final User user = new User(fullName, email, password, adminRights);
                     firebaseAuth.createUserWithEmailAndPassword(user.getUserEmailAddress(), user.getUserPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -117,7 +118,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     });
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "Please ensure that your passwords match", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please ensure your passwords match", Toast.LENGTH_LONG).show();
 
                     //Hides ProgressBar
                     toggleProgressBarVisibility(View.INVISIBLE);

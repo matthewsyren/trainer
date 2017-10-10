@@ -57,6 +57,25 @@ public class User {
         userAdminRights = preferences.getBoolean("userAdminRights", false);
     }
 
+    //Ensures that all User data is valid (returns true if data is valid)
+    public boolean validateUser(Context context){
+        boolean valid = false;
+        if(userFullName.isEmpty()){
+            Toast.makeText(context, "Please enter your full name", Toast.LENGTH_LONG).show();
+        }
+        else if(userEmailAddress.isEmpty()){
+            Toast.makeText(context, "Please enter your email address", Toast.LENGTH_LONG).show();
+        }
+        else if(userPassword.isEmpty() || userPassword.length() < 6){
+            Toast.makeText(context, "Please enter a password that is at least 6 characters long", Toast.LENGTH_LONG).show();
+        }
+        else{
+            valid = true;
+        }
+
+        return valid;
+    }
+
     //Getter methods
     public String getUserFullName() {
         return userFullName;

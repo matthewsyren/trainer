@@ -69,6 +69,16 @@
         android:background="@drawable/button_rounded"
         android:textColor="@color/colorPrimary"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_forgot_password"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/label_forgot_password_text_size"
+        android:onClick="forgotPasswordOnClick"
+        android:layout_below="@id/button_create_account_link"/>
+
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/progress_bar_diameter"

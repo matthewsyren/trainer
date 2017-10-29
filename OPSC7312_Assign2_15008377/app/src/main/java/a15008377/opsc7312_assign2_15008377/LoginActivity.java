@@ -9,14 +9,20 @@
 package a15008377.opsc7312_assign2_15008377;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -126,6 +132,86 @@ public class LoginActivity extends AppCompatActivity {
         try{
             Intent intent = new Intent(LoginActivity.this, CreateAccountActivity.class);
             startActivity(intent);
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method initiates the password recovery feature of this app
+    public void forgotPasswordOnClick(View view){
+        try{
+            displayInputMessage("Please enter your email address. An email with a link to reset your password will be sent to you.");
+        }
+        catch(Exception exc){
+            Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Method displays an AlertDialog to get an email address from the user
+    public void displayInputMessage(String message){
+        try{
+            //Creates AlertDialog content
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            TextView textView = new TextView(this);
+            textView.setText(message);
+            textView.setTypeface(null, Typeface.BOLD);
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+            //Adds content to AlertDialog
+            LinearLayout relativeLayout = new LinearLayout(this);
+            relativeLayout.setOrientation(LinearLayout.VERTICAL);
+            relativeLayout.addView(textView);
+            relativeLayout.addView(input);
+            alertDialog.setView(relativeLayout);
+
+            //Creates OnClickListener for the Dialog message
+            DialogInterface.OnClickListener dialogOnClickListener = new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int button) {
+                    switch(button){
+                        case AlertDialog.BUTTON_POSITIVE:
+                            String emailAddress = input.getText().toString();
+                            if(emailAddress.length() > 0){
+                                toggleProgressBarVisibility(View.VISIBLE);
+
+                                //Sends the email to the user if the email address is valid
+                                firebaseAuth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            //Displays message telling the user the email has been sent successfully
+                                            Toast.makeText(getApplicationContext(), "Email sent", Toast.LENGTH_LONG).show();
+                                        }
+                                        else{
+                                            String exceptionMessage = task.getException().getMessage();
+
+                                            //Displays appropriate error messages based on the exception message details
+                                            if(exceptionMessage.contains("There is no user record corresponding to this identifier. The user may have been deleted.")){
+                                                Toast.makeText(getApplicationContext(), "There is no account associated with that email address, please re-enter your email address", Toast.LENGTH_LONG).show();
+                                            }
+                                            else if(exceptionMessage.contains("INVALID_EMAIL")){
+                                                Toast.makeText(getApplicationContext(), "The email you entered is invalid, please ensure that the email address you enter exists", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                        toggleProgressBarVisibility(View.INVISIBLE);
+                                    }
+                                });
+                            }
+                            else{
+                                //Asks the user to enter a valid email address
+                                displayInputMessage("Please enter your email address");
+                            }
+                            break;
+                    }
+                }
+            };
+
+            //Assigns button and OnClickListener for the AlertDialog and displays the AlertDialog
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", dialogOnClickListener);
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
         }
         catch(Exception exc){
             Toast.makeText(getApplicationContext(), exc.getMessage(), Toast.LENGTH_LONG).show();

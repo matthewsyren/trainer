@@ -31,10 +31,10 @@ import java.util.Locale;
 
 public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
     //Declarations
-    Quiz quiz;
-    int questionNumber = 0;
-    int correctAnswers = 0;
-    TextToSpeech textToSpeech;
+    private Quiz quiz;
+    private int questionNumber = 0;
+    private int correctAnswers = 0;
+    private TextToSpeech textToSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

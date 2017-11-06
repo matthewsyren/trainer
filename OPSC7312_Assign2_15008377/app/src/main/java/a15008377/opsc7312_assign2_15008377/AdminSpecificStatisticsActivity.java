@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class AdminSpecificStatisticsActivity extends AppCompatActivity {
     //Declarations
-    ArrayList<Statistic> lstStatistics;
+    private ArrayList<Statistic> lstStatistics;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{

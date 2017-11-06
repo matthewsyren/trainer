@@ -39,10 +39,10 @@ public class QuizListViewAdapter extends ArrayAdapter {
     //Declarations
     private Context context;
     private ArrayList<Quiz> lstQuizzes;
-    NotificationManager notificationManager;
-    Notification.Builder notificationBuilder;
-    int notificationID = 1;
-    Notification notification;
+    private NotificationManager notificationManager;
+    private Notification.Builder notificationBuilder;
+    private int notificationID = 1;
+    private Notification notification;
 
     //Constructor
     public QuizListViewAdapter(Context context, ArrayList<Quiz> lstQuizzes) {

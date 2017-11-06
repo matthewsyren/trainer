@@ -22,7 +22,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -39,11 +38,11 @@ import java.util.ArrayList;
 
 public class QuizManagerActivity extends AdminBaseActivity {
     //Declarations
-    NotificationManager notificationManager;
-    Notification.Builder notificationBuilder;
-    int notificationID = 1;
-    Notification notification;
-    String key;
+    private NotificationManager notificationManager;
+    private Notification.Builder notificationBuilder;
+    private int notificationID = 1;
+    private Notification notification;
+    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

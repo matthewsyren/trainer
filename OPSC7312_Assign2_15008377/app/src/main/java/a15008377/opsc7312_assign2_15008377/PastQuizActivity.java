@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class PastQuizActivity extends UserBaseActivity {
     //Declarations
-    ArrayList<Statistic> lstStatistics;
+    private ArrayList<Statistic> lstStatistics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

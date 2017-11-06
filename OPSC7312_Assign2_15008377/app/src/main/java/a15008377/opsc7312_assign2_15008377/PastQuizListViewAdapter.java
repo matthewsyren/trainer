@@ -40,10 +40,10 @@ public class PastQuizListViewAdapter extends ArrayAdapter {
     private Context context;
     private ArrayList<Quiz> lstQuizzes;
     private ArrayList<Statistic> lstStatistics;
-    NotificationManager notificationManager;
-    Notification.Builder notificationBuilder;
-    int notificationID = 1;
-    Notification notification;
+    private NotificationManager notificationManager;
+    private Notification.Builder notificationBuilder;
+    private int notificationID = 1;
+    private Notification notification;
 
     //Constructor
     public PastQuizListViewAdapter(Context context, ArrayList<Quiz> lstQuizzes, ArrayList<Statistic> lstStatistics) {

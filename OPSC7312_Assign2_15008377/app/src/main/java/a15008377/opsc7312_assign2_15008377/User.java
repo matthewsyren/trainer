@@ -48,7 +48,7 @@ public class User {
 
     }
 
-    //Default constructor (used when the user has already signed in, context is used to get the user's key from SharedPreferences)
+    //Constructor (used when the user has already signed in, context is used to get the user's key from SharedPreferences)
     public User(Context context){
         //Fetches the user's email address and key from SharedPreferences
         SharedPreferences preferences = context.getSharedPreferences("", Context.MODE_PRIVATE);

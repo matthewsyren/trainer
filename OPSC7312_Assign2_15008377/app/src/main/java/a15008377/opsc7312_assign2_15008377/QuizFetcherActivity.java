@@ -27,7 +27,8 @@ import java.util.ArrayList;
 
 public class QuizFetcherActivity extends UserBaseActivity {
     //Declarations
-    ArrayList<Quiz> lstQuizzes;
+    private ArrayList<Quiz> lstQuizzes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{

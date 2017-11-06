@@ -24,13 +24,12 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 public class AdminStatisticsActivity extends AdminBaseActivity {
     //Declarations
-    ArrayList<User> lstUsers;
-    ArrayList<Statistic> lstStatistics;
-    Context context;
+    private ArrayList<User> lstUsers;
+    private ArrayList<Statistic> lstStatistics;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
